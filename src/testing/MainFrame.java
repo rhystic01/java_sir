@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
 public class MainFrame extends JFrame {
@@ -17,6 +18,16 @@ public class MainFrame extends JFrame {
         // Add main panel to frame
         add(mainPanel);
         mainPanel.setPreferredSize(new Dimension(350, 250));
+        
+     // Create an instance of the custom menu class
+        MyMenu myMenu = new MyMenu();
+
+        // Create a menu bar and add the custom menu to it
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(myMenu);
+
+        // Set the menu bar to the frame
+        setJMenuBar(menuBar);
 
         pack();
         setLocationRelativeTo(null); // Center frame on screen
