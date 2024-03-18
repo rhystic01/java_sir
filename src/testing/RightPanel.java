@@ -11,72 +11,72 @@ public class RightPanel extends JPanel {
   
     	this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         // Initialize and customize right panel components
-    	JLabel aa1 = new JLabel("Transmission rate");
-    	add(aa1);
-    	JTextField label = new JTextField("Right Panel");
-        add(label);
+    	JLabel transRateLabel = new JLabel("Transmission rate");
+    	add(transRateLabel);
+    	JTextField transRateTextField = new JTextField("0");
+        add(transRateTextField);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel aa2 = new JLabel("Recovery rate");
-    	add(aa2);
-        JTextField label1 = new JTextField("Right Panel");
-        add(label1);
+        JLabel recoveryRateLabel = new JLabel("Recovery rate");
+    	add(recoveryRateLabel);
+        JTextField recoveryRateTextField = new JTextField("0");
+        add(recoveryRateTextField);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel aa3 = new JLabel("Grid size");
-    	add(aa3);       
-        JTextField label2 = new JTextField("Right Panel");
-        add(label2);
+        JLabel gridSizeLabel = new JLabel("Grid size");
+    	add(gridSizeLabel);       
+        JTextField gridSizeTextField = new JTextField("0");
+        add(gridSizeTextField);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel aa4 = new JLabel("Initial infected distribution");
-    	add(aa4);       
-        JTextField label3 = new JTextField("Right Panel");
-        add(label3);
+        JLabel initDistributionLabel = new JLabel("Initial infected distribution");
+    	add(initDistributionLabel);       
+        JTextField initDistributionTextField = new JTextField("0");
+        add(initDistributionTextField);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel aa5 = new JLabel("Number of simulations");
-    	add(aa5);
-        JTextField label4 = new JTextField("Right Panel");
-        add(label4);
+        JLabel numOfSimulationLabel = new JLabel("Number of simulations");
+    	add(numOfSimulationLabel);
+        JTextField numOfSimulationTextField = new JTextField("0");
+        add(numOfSimulationTextField);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel aa6 = new JLabel("Simulation time");
-    	add(aa6);
-        JTextField label5 = new JTextField("Right Panel");
-        add(label5);
+        JLabel simulationTimeLabel = new JLabel("Simulation time");
+    	add(simulationTimeLabel);
+        JTextField simulationTimeTextField = new JTextField("0");
+        add(simulationTimeTextField);
         
         add(Box.createRigidArea(new Dimension(0, 20)));
         
-        JButton label6 = new JButton("Start/Stop");
-        add(label6);
+        JButton startStopButton = new JButton("Start/Stop");
+        add(startStopButton);
         
         add(Box.createRigidArea(new Dimension(0, 30)));
         
-        JLabel aa7 = new JLabel("Animation speed");
-    	add(aa7);
+        JLabel animationSpeedLabel = new JLabel("Animation speed");
+    	add(animationSpeedLabel);
         
         add(Box.createRigidArea(new Dimension(0, 12)));
-        JSlider label7 = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);
+        JSlider animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);
         
         
-        label7.setMajorTickSpacing(10);
-        label7.setPaintTicks(true);
-        label7.setPaintLabels(true);
-        label7.setMaximumSize(new Dimension(300, label7.getPreferredSize().height));
-        add(label7);
+        animationSpeedSlider.setMajorTickSpacing(10);
+        animationSpeedSlider.setPaintTicks(true);
+        animationSpeedSlider.setPaintLabels(true);
+        animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
+        add(animationSpeedSlider);
         
-        label.setMaximumSize(new Dimension(300, label.getPreferredSize().height));
-        label1.setMaximumSize(new Dimension(300, label1.getPreferredSize().height));
-        label2.setMaximumSize(new Dimension(300, label2.getPreferredSize().height));
-        label3.setMaximumSize(new Dimension(300, label3.getPreferredSize().height));
-        label4.setMaximumSize(new Dimension(300, label4.getPreferredSize().height));
-        label5.setMaximumSize(new Dimension(300, label5.getPreferredSize().height));
+        transRateTextField.setMaximumSize(new Dimension(300, transRateTextField.getPreferredSize().height));
+        recoveryRateTextField.setMaximumSize(new Dimension(300, recoveryRateTextField.getPreferredSize().height));
+        gridSizeTextField.setMaximumSize(new Dimension(300, gridSizeTextField.getPreferredSize().height));
+        numOfSimulationTextField.setMaximumSize(new Dimension(300, numOfSimulationTextField.getPreferredSize().height));
+        simulationTimeTextField.setMaximumSize(new Dimension(300, simulationTimeTextField.getPreferredSize().height));
+        initDistributionTextField.setMaximumSize(new Dimension(300, initDistributionTextField.getPreferredSize().height));
         
        // this.setBackground(Color.WHITE);
                 
