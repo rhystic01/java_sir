@@ -1,7 +1,10 @@
 package testing;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.*;
 
@@ -14,6 +17,7 @@ public class RightPanel extends JPanel {
         JLabel label1 = new JLabel("Right Panel 1");
         add(label1);
         this.setBackground(Color.GREEN);
+                
     }
 }
 

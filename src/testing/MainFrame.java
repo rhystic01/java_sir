@@ -8,7 +8,7 @@ import javax.swing.SwingUtilities;
 
 public class MainFrame extends JFrame {
 	public MainFrame() {
-		setSize(840,580);
+		
         setTitle("Symulacja SIR");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -18,9 +18,10 @@ public class MainFrame extends JFrame {
         add(mainPanel);
         mainPanel.setPreferredSize(new Dimension(350, 250));
 
-        //pack();
+        pack();
         setLocationRelativeTo(null); // Center frame on screen
         setVisible(true);
+        
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
