@@ -5,8 +5,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class LeftSubPanel_graph extends JPanel {
-    public LeftSubPanel_graph() {
+public class LeftSubPanelGraph extends JPanel {
+    public LeftSubPanelGraph() {
         // Initialize and customize left panel components
         JLabel label = new JLabel("SIR graphs");
         add(label);

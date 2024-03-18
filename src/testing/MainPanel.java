@@ -29,8 +29,8 @@ public class MainPanel extends JPanel {
                 leftPanel.setPreferredSize(new Dimension((int) (rightPanelWidth*0.75), rightPanelHeight));
                 revalidate(); 
                 repaint(); 
-                System.out.println(getSize().width);
-                System.out.println(getSize().height);
+                //System.out.println(getSize().width);
+                //System.out.println(getSize().height);
             }
         });
     }
