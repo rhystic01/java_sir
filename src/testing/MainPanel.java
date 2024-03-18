@@ -2,8 +2,6 @@ package testing;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -11,8 +9,7 @@ import javax.swing.*;
 
 public class MainPanel extends JPanel {
     public MainPanel() {   
-    	this.setLayout(new BorderLayout());
-    	//this.setLayout(new GridLayout(1,2));
+    	this.setLayout(new BorderLayout());   
         
         LeftPanel leftPanel = new LeftPanel();
         RightPanel rightPanel = new RightPanel();
@@ -20,13 +17,7 @@ public class MainPanel extends JPanel {
         // Add left and right panels to main panel
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
-        //add(leftPanel);
-        //add(rightPanel);
-        
-        //Dimension mainPanelSize = this.getSize();
-        //int mainPanelWidth = mainPanelSize.width / 5;
-        //leftPanel.setPreferredSize(new Dimension(mainPanelWidth, mainPanelSize.height));
-        
+                            
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -34,9 +25,11 @@ public class MainPanel extends JPanel {
                 int rightPanelWidth = rightPanelsize.width;
                 int rightPanelHeight = rightPanelsize.height;
                
-                leftPanel.setPreferredSize(new Dimension((int) (rightPanelWidth*0.67), rightPanelHeight));
+                leftPanel.setPreferredSize(new Dimension((int) (rightPanelWidth*0.75), rightPanelHeight));
                 revalidate(); 
-                repaint();   
+                repaint(); 
+                System.out.println(getSize().width);
+                System.out.println(getSize().height);
             }
         });
     }

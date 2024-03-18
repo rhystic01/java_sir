@@ -25,7 +25,7 @@ public class LeftPanel extends JPanel {
                
                 leftSubPanel_graph.setPreferredSize(new Dimension(leftPanelWidth, leftPanelHeight/3));
                 revalidate(); 
-                repaint();   
+                repaint();                  
             }
         });
     	

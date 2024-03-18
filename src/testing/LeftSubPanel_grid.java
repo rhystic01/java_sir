@@ -10,6 +10,6 @@ public class LeftSubPanel_grid extends JPanel {
         // Initialize and customize left panel components
         JLabel label = new JLabel("LeftSubPanel_grid");
         add(label);
-        this.setBackground(Color.red);
+        this.setBackground(Color.GRAY);
     }
 }

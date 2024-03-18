@@ -1,8 +1,6 @@
 package testing;
 
 import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
-import java.awt.HeadlessException;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
@@ -10,14 +8,14 @@ import javax.swing.SwingUtilities;
 public class MainFrame extends JFrame {
 	public MainFrame() {
 		
-        setTitle("Symulacja SIR");
+        setTitle("SIR Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         MainPanel mainPanel = new MainPanel();
 
         // Add main panel to frame
         add(mainPanel);
-        mainPanel.setPreferredSize(new Dimension(350, 250));
+        mainPanel.setPreferredSize(new Dimension(884, 589));
         
      // Create an instance of the custom menu class
         MyMenu myMenu = new MyMenu();
@@ -32,6 +30,8 @@ public class MainFrame extends JFrame {
         pack();
         setLocationRelativeTo(null); // Center frame on screen
         setVisible(true);
+        
+        
         
     }
     public static void main(String[] args) {
