@@ -2,6 +2,7 @@ package testing;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class MyMenu extends JMenu {
     public MyMenu() {
         super("Options"); 

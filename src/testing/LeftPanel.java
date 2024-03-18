@@ -4,9 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class LeftPanel extends JPanel {
     public LeftPanel() {
     	this.setLayout(new BorderLayout());

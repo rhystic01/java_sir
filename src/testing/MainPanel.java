@@ -7,6 +7,7 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class MainPanel extends JPanel {
     public MainPanel() {   
     	this.setLayout(new BorderLayout());   

@@ -1,10 +1,9 @@
 package testing;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class RightPanel extends JPanel {
     public RightPanel() {
     	add(Box.createRigidArea(new Dimension(0, 12)));
@@ -63,8 +62,7 @@ public class RightPanel extends JPanel {
         
         add(Box.createRigidArea(new Dimension(0, 12)));
         JSlider animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);
-        
-        
+               
         animationSpeedSlider.setMajorTickSpacing(10);
         animationSpeedSlider.setPaintTicks(true);
         animationSpeedSlider.setPaintLabels(true);
