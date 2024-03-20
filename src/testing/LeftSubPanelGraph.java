@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class LeftSubPanelGraph extends JPanel {
     public LeftSubPanelGraph() {
-        // Initialize and customize left panel components
         JLabel label = new JLabel("SIR graphs");
         add(label);
         this.setBackground(Color.LIGHT_GRAY);       

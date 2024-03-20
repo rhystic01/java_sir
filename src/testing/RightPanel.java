@@ -1,83 +1,141 @@
 package testing;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
-    public RightPanel() {
+	//private ActionListener startStopButtonListener;
+	//private ChangeListener animationSpeedSliderListener;
+	private RightPanelService rightPanelService;
+	private JLabel xLabel, transRateLabel, recoveryRateLabel, gridSizeLabel, initDistributionLabel, numOfSimulationLabel, simulationTimeLabel, animationSpeedLabel;
+	private JTextField transRateTextField, recoveryRateTextField, gridSizeTextFieldM, gridSizeTextFieldN, initDistributionTextField, numOfSimulationTextField, simulationTimeTextField; 
+    private JButton startStopButton;
+    private JSlider animationSpeedSlider;
+    private JPanel gridSizeFieldsPanel;
+	// contructor sets up UI elements and adds listeners
+	public RightPanel(/*ActionListener startStopButtonListener, ChangeListener animationSpeedSliderListener,*/ RightPanelService rightPanelService ) {
+    	//this.startStopButtonListener = startStopButtonListener;
+    	//this.animationSpeedSliderListener = animationSpeedSliderListener;
+    	this.rightPanelService = rightPanelService;
+    	
     	add(Box.createRigidArea(new Dimension(0, 12)));
-  
+    	
+    	// Transmission rate user input area
     	this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        // Initialize and customize right panel components
-    	JLabel transRateLabel = new JLabel("Transmission rate");
+    	transRateLabel = new JLabel("Transmission rate");
     	add(transRateLabel);
-    	JTextField transRateTextField = new JTextField("0");
+    	transRateTextField = new JTextField("0");
         add(transRateTextField);
-        
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel recoveryRateLabel = new JLabel("Recovery rate");
+        // Recovery rate user input area
+        recoveryRateLabel = new JLabel("Recovery rate");
     	add(recoveryRateLabel);
-        JTextField recoveryRateTextField = new JTextField("0");
+        recoveryRateTextField = new JTextField("0");
         add(recoveryRateTextField);
-        
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel gridSizeLabel = new JLabel("Grid size");
+        // Grid size user input area
+        gridSizeFieldsPanel = new JPanel();
+        gridSizeFieldsPanel.setLayout(new BoxLayout(gridSizeFieldsPanel, BoxLayout.X_AXIS));
+        xLabel = new JLabel("x");        
+        gridSizeLabel = new JLabel("Grid size");
     	add(gridSizeLabel);       
-        JTextField gridSizeTextField = new JTextField("0");
-        add(gridSizeTextField);
-        
+        gridSizeTextFieldM = new JTextField("0");        
+        gridSizeTextFieldN = new JTextField("0");
+        gridSizeFieldsPanel.add(gridSizeTextFieldM);
+        gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
+        gridSizeFieldsPanel.add(xLabel);
+        gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
+        gridSizeFieldsPanel.add(gridSizeTextFieldN);
+        add(gridSizeFieldsPanel);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel initDistributionLabel = new JLabel("Initial infected distribution");
+        // Initial infected distribution user input area
+        initDistributionLabel = new JLabel("Initial infected distribution");
     	add(initDistributionLabel);       
-        JTextField initDistributionTextField = new JTextField("0");
+        initDistributionTextField = new JTextField("0");
         add(initDistributionTextField);
-        
         add(Box.createRigidArea(new Dimension(0, 12)));
-        
-        JLabel numOfSimulationLabel = new JLabel("Number of simulations");
+       
+        // Number of simulations user input area
+        numOfSimulationLabel = new JLabel("Number of simulations");
     	add(numOfSimulationLabel);
-        JTextField numOfSimulationTextField = new JTextField("0");
+        numOfSimulationTextField = new JTextField("0");
         add(numOfSimulationTextField);
-        
         add(Box.createRigidArea(new Dimension(0, 12)));
         
-        JLabel simulationTimeLabel = new JLabel("Simulation time");
+        // Simulation time user input area
+        simulationTimeLabel = new JLabel("Simulation time");
     	add(simulationTimeLabel);
-        JTextField simulationTimeTextField = new JTextField("0");
+        simulationTimeTextField = new JTextField("0");
         add(simulationTimeTextField);
-        
         add(Box.createRigidArea(new Dimension(0, 20)));
         
-        JButton startStopButton = new JButton("Start/Stop");
+        // Start/Stop button
+        startStopButton = new JButton("Start/Stop");
+        //startStopButton.addActionListener(rightPanelController);
+        startStopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	rightPanelService.calculate(getParameters());
+            }
+        });
         add(startStopButton);
-        
         add(Box.createRigidArea(new Dimension(0, 30)));
         
-        JLabel animationSpeedLabel = new JLabel("Animation speed");
-    	add(animationSpeedLabel);
-        
-        add(Box.createRigidArea(new Dimension(0, 12)));
-        JSlider animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);
-               
+        // Animation speed slider
+        animationSpeedLabel = new JLabel("Animation speed");
+    	add(animationSpeedLabel);      
+        add(Box.createRigidArea(new Dimension(0, 12)));        
+        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);        
         animationSpeedSlider.setMajorTickSpacing(10);
         animationSpeedSlider.setPaintTicks(true);
         animationSpeedSlider.setPaintLabels(true);
         animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
+        // animationSpeedSlider.addChangeListener(rightPanelController);
         add(animationSpeedSlider);
         
-        transRateTextField.setMaximumSize(new Dimension(300, transRateTextField.getPreferredSize().height));
-        recoveryRateTextField.setMaximumSize(new Dimension(300, recoveryRateTextField.getPreferredSize().height));
-        gridSizeTextField.setMaximumSize(new Dimension(300, gridSizeTextField.getPreferredSize().height));
-        numOfSimulationTextField.setMaximumSize(new Dimension(300, numOfSimulationTextField.getPreferredSize().height));
-        simulationTimeTextField.setMaximumSize(new Dimension(300, simulationTimeTextField.getPreferredSize().height));
-        initDistributionTextField.setMaximumSize(new Dimension(300, initDistributionTextField.getPreferredSize().height));
-        
-       // this.setBackground(Color.WHITE);
-                
+        // Setting the size of text fields
+        transRateTextField.setMaximumSize(new Dimension(200, transRateTextField.getPreferredSize().height));
+        recoveryRateTextField.setMaximumSize(new Dimension(200, recoveryRateTextField.getPreferredSize().height));
+        gridSizeTextFieldM.setMaximumSize(new Dimension(50, gridSizeTextFieldM.getPreferredSize().height));
+        gridSizeTextFieldN.setMaximumSize(new Dimension(50, gridSizeTextFieldN.getPreferredSize().height));
+        numOfSimulationTextField.setMaximumSize(new Dimension(200, numOfSimulationTextField.getPreferredSize().height));
+        simulationTimeTextField.setMaximumSize(new Dimension(200, simulationTimeTextField.getPreferredSize().height));
+        initDistributionTextField.setMaximumSize(new Dimension(200, initDistributionTextField.getPreferredSize().height));               
     }
+	// local helper function to use with function getParameter() below
+	private double tryCatchDouble(JTextField textField) {
+		double value = 0;
+		try {
+            // Attempt to parse the text from the text field to a double
+            value = Double.parseDouble(textField.getText());
+        } catch (NumberFormatException ex) {
+            // Handle non-numeric input
+            JOptionPane.showMessageDialog(null, "Błąd: Wprowadź poprawne dane");
+            textField.setText("0");
+        }
+    	return value;
+	}
+    // function to retrieve the parameter from text fields
+    private List<Double> getParameters() {
+    	List<Double> parameters = new ArrayList<>();
+    	parameters.add(tryCatchDouble(transRateTextField));
+    	parameters.add(tryCatchDouble(recoveryRateTextField));
+    	parameters.add(tryCatchDouble(numOfSimulationTextField));
+    	parameters.add(tryCatchDouble(simulationTimeTextField));
+    	parameters.add(tryCatchDouble(gridSizeTextFieldM));
+    	parameters.add(tryCatchDouble(gridSizeTextFieldN)); 
+    	return parameters;
+    }
+    
 }
 

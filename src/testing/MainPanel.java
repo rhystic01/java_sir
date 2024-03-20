@@ -9,11 +9,13 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel {
-    public MainPanel() {   
-    	this.setLayout(new BorderLayout());   
-        
-        LeftPanel leftPanel = new LeftPanel();
-        RightPanel rightPanel = new RightPanel();
+	private RightPanel rightPanel;
+	private LeftPanel leftPanel;
+    public MainPanel(RightPanel rightPanel,LeftPanel leftPanel) { 
+    	this.rightPanel = rightPanel;
+    	this.leftPanel = leftPanel;
+    	
+    	this.setLayout(new BorderLayout()); 
 
         // Add left and right panels to main panel
         add(leftPanel, BorderLayout.WEST);
@@ -22,15 +24,13 @@ public class MainPanel extends JPanel {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                Dimension rightPanelsize = getSize(); 
-                int rightPanelWidth = rightPanelsize.width;
-                int rightPanelHeight = rightPanelsize.height;
+                Dimension mainPanelsize = getSize(); 
+                int mainPanelWidth = mainPanelsize.width;
+                int mainPanelHeight = mainPanelsize.height;
                
-                leftPanel.setPreferredSize(new Dimension((int) (rightPanelWidth*0.75), rightPanelHeight));
+                leftPanel.setPreferredSize(new Dimension((int) (mainPanelWidth*0.75), mainPanelHeight));
                 revalidate(); 
                 repaint(); 
-                //System.out.println(getSize().width);
-                //System.out.println(getSize().height);
             }
         });
     }

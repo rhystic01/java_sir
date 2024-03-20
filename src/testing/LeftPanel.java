@@ -8,13 +8,14 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class LeftPanel extends JPanel {
-    public LeftPanel() {
+	private LeftSubPanelGrid leftSubPanelGrid;
+	private LeftSubPanelGraph leftSubPanelGraph;
+    public LeftPanel(LeftSubPanelGrid leftSubPanelGrid, LeftSubPanelGraph leftSubPanelGraph) {
+    	this.leftSubPanelGrid = leftSubPanelGrid;
+    	this.leftSubPanelGraph =  leftSubPanelGraph;
     	this.setLayout(new BorderLayout());
-        // Initialize and customize left panel components
-    	LeftSubPanelGrid leftSubPanel_grid = new LeftSubPanelGrid();
-    	LeftSubPanelGraph leftSubPanel_graph = new LeftSubPanelGraph();
-    	add(leftSubPanel_grid, BorderLayout.CENTER);
-    	add(leftSubPanel_graph, BorderLayout.SOUTH);
+    	add(leftSubPanelGrid, BorderLayout.CENTER);
+    	add(leftSubPanelGraph, BorderLayout.SOUTH);
     	
     	addComponentListener(new ComponentAdapter() {
             @Override
@@ -23,7 +24,7 @@ public class LeftPanel extends JPanel {
                 int leftPanelWidth = leftPanelsize.width;
                 int leftPanelHeight = leftPanelsize.height;
                
-                leftSubPanel_graph.setPreferredSize(new Dimension(leftPanelWidth, leftPanelHeight/3));
+                leftSubPanelGraph.setPreferredSize(new Dimension(leftPanelWidth, leftPanelHeight/3));
                 revalidate(); 
                 repaint();                  
             }
