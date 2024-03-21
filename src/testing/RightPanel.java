@@ -11,19 +11,15 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
-	//private ActionListener startStopButtonListener;
-	//private ChangeListener animationSpeedSliderListener;
-	private RightPanelService rightPanelService;
+	private SirCalculator sirCalculator;
 	private JLabel xLabel, transRateLabel, recoveryRateLabel, gridSizeLabel, initDistributionLabel, numOfSimulationLabel, simulationTimeLabel, animationSpeedLabel;
 	private JTextField transRateTextField, recoveryRateTextField, gridSizeTextFieldM, gridSizeTextFieldN, initDistributionTextField, numOfSimulationTextField, simulationTimeTextField; 
     private JButton startStopButton;
     private JSlider animationSpeedSlider;
     private JPanel gridSizeFieldsPanel;
 	// contructor sets up UI elements and adds listeners
-	public RightPanel(/*ActionListener startStopButtonListener, ChangeListener animationSpeedSliderListener,*/ RightPanelService rightPanelService ) {
-    	//this.startStopButtonListener = startStopButtonListener;
-    	//this.animationSpeedSliderListener = animationSpeedSliderListener;
-    	this.rightPanelService = rightPanelService;
+	public RightPanel(SirCalculator rightPanelService ) {    	
+    	this.sirCalculator = sirCalculator;
     	
     	add(Box.createRigidArea(new Dimension(0, 12)));
     	
@@ -85,7 +81,7 @@ public class RightPanel extends JPanel {
         startStopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	rightPanelService.calculate(getParameters());
+            	sirCalculator.loadParameters(retrieveDoubleParameters(), retrieveIntParameters());
             }
         });
         add(startStopButton);
@@ -112,7 +108,7 @@ public class RightPanel extends JPanel {
         simulationTimeTextField.setMaximumSize(new Dimension(200, simulationTimeTextField.getPreferredSize().height));
         initDistributionTextField.setMaximumSize(new Dimension(200, initDistributionTextField.getPreferredSize().height));               
     }
-	// local helper function to use with function getParameter() below
+	// local helper functions to retrieve and parse from textfield
 	private double tryCatchDouble(JTextField textField) {
 		double value = 0;
 		try {
@@ -125,17 +121,35 @@ public class RightPanel extends JPanel {
         }
     	return value;
 	}
-    // function to retrieve the parameter from text fields
-    private List<Double> getParameters() {
-    	List<Double> parameters = new ArrayList<>();
-    	parameters.add(tryCatchDouble(transRateTextField));
-    	parameters.add(tryCatchDouble(recoveryRateTextField));
-    	parameters.add(tryCatchDouble(numOfSimulationTextField));
-    	parameters.add(tryCatchDouble(simulationTimeTextField));
-    	parameters.add(tryCatchDouble(gridSizeTextFieldM));
-    	parameters.add(tryCatchDouble(gridSizeTextFieldN)); 
-    	return parameters;
-    }
+
+	private int tryCatchInt(JTextField textField) {
+		int value = 0;
+		try {
+            // Attempt to parse the text from the text field to an int
+            value = Math.abs(Integer.parseInt(textField.getText()));
+        } catch (NumberFormatException ex) {
+            // Handle non-numeric input
+            JOptionPane.showMessageDialog(null, "Błąd: Wprowadź poprawne dane");
+            textField.setText("0");
+        }
+    	return value;
+	}
+	// getter functions
+	private List<Integer> retrieveIntParameters() {
+		 List<Integer> intParameters = new ArrayList<>();
+		 intParameters.add(tryCatchInt(gridSizeTextFieldM));
+		 intParameters.add(tryCatchInt(gridSizeTextFieldN));
+		 intParameters.add(tryCatchInt(numOfSimulationTextField));
+		 intParameters.add(tryCatchInt(simulationTimeTextField));
+		 return intParameters;
+	}
+	
+	private List<Double> retrieveDoubleParameters() {
+		 List<Double> doubleParameters = new ArrayList<>();
+		 doubleParameters.add(tryCatchDouble(transRateTextField));
+		 doubleParameters.add(tryCatchDouble(recoveryRateTextField));		 
+		 return doubleParameters;
+	}	
     
 }
 
