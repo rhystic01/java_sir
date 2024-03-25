@@ -16,5 +16,15 @@ public class SirCalculator {
 		this.numOfSims = integerParameters.get(2);
 		this.simTime = integerParameters.get(3);
 	}
+	
+	public void test() {
+		System.out.println("started calculation");
+		System.out.println("transRate: " + transRate);
+		System.out.println("recoveryRate: " + recoveryRate);
+		System.out.println("gridSizeM: " + gridSizeM);
+		System.out.println("gridSizeN: " + gridSizeN);
+		System.out.println("numOfSims: " + numOfSims);
+		System.out.println("simTime: " + simTime);
+	}
 		
 }

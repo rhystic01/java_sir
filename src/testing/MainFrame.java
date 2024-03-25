@@ -16,8 +16,8 @@ public class MainFrame extends JFrame {
         LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
         
-        SirCalculator rightPanelService = new SirCalculator();
-        RightPanel rightPanel = new RightPanel(rightPanelService);
+        SirCalculator sirCalculator = new SirCalculator();
+        RightPanel rightPanel = new RightPanel(sirCalculator);
         
         MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);
         

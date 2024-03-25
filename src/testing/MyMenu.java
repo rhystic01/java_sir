@@ -13,10 +13,10 @@ public class MyMenu extends JMenu {
     	
     	this.myMenuController = myMenuController;
     	
-        clearParametersItem = new JMenuItem("Wyczyść parametry"); 
-        showGraphsItem = new JMenuItem("Pokaż wykresy");
-        readFromFileItem = new JMenuItem("Wczytaj parametry z pliku");
-        saveToFileItem = new JMenuItem("Zapisz dane symulacji do pliku");
+        clearParametersItem = new JMenuItem("Clear parameters"); 
+        showGraphsItem = new JMenuItem("Show graphs");
+        readFromFileItem = new JMenuItem("Read parameters from file");
+        saveToFileItem = new JMenuItem("Save simulation data to file");
         
         clearParametersItem.addActionListener(myMenuController);
         showGraphsItem.addActionListener(myMenuController);

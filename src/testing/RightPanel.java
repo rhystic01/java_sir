@@ -18,7 +18,7 @@ public class RightPanel extends JPanel {
     private JSlider animationSpeedSlider;
     private JPanel gridSizeFieldsPanel;
 	// contructor sets up UI elements and adds listeners
-	public RightPanel(SirCalculator rightPanelService ) {    	
+	public RightPanel(SirCalculator sirCalculator) {    	
     	this.sirCalculator = sirCalculator;
     	
     	add(Box.createRigidArea(new Dimension(0, 12)));
@@ -82,6 +82,7 @@ public class RightPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	sirCalculator.loadParameters(retrieveDoubleParameters(), retrieveIntParameters());
+            	sirCalculator.test();
             }
         });
         add(startStopButton);
@@ -116,7 +117,7 @@ public class RightPanel extends JPanel {
             value = Double.parseDouble(textField.getText());
         } catch (NumberFormatException ex) {
             // Handle non-numeric input
-            JOptionPane.showMessageDialog(null, "Błąd: Wprowadź poprawne dane");
+            JOptionPane.showMessageDialog(null, "Error: Enter correct data");
             textField.setText("0");
         }
     	return value;
@@ -129,7 +130,7 @@ public class RightPanel extends JPanel {
             value = Math.abs(Integer.parseInt(textField.getText()));
         } catch (NumberFormatException ex) {
             // Handle non-numeric input
-            JOptionPane.showMessageDialog(null, "Błąd: Wprowadź poprawne dane");
+            JOptionPane.showMessageDialog(null, "Error: Enter correct data");
             textField.setText("0");
         }
     	return value;
