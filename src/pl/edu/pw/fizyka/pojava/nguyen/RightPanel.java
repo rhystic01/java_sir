@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -17,6 +19,8 @@ public class RightPanel extends JPanel {
     private JButton startStopButton;
     private JSlider animationSpeedSlider;
     private JPanel gridSizeFieldsPanel;
+    private int dataError = 0;
+     
 	// contructor sets up UI elements and adds listeners
 	public RightPanel(SirCalculator sirCalculator) {    	
     	this.sirCalculator = sirCalculator;
@@ -57,7 +61,7 @@ public class RightPanel extends JPanel {
         // Initial infected distribution user input area
         initDistributionLabel = new JLabel("Initial infected distribution");
     	add(initDistributionLabel);       
-        initDistributionTextField = new JTextField("0");
+        initDistributionTextField = new JTextField("0,0");
         add(initDistributionTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
        
@@ -81,8 +85,16 @@ public class RightPanel extends JPanel {
         startStopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	sirCalculator.loadParameters(retrieveDoubleParameters(), retrieveIntParameters());
-            	sirCalculator.test();
+            	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(), retrieveGridSizeN(),
+            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());
+            	
+            	System.out.println(dataError);
+            	if(dataError == 0) {            		
+                	sirCalculator.test();
+            	} else {
+            		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value", "Input data error", JOptionPane.ERROR_MESSAGE);
+            	}      
+            	dataError = 0;
             }
         });
         add(startStopButton);
@@ -114,11 +126,9 @@ public class RightPanel extends JPanel {
 		double value = 0;
 		try {
             // Attempt to parse the text from the text field to a double
-            value = Double.parseDouble(textField.getText());
+            value = Double.parseDouble(textField.getText());           
         } catch (NumberFormatException ex) {
-            // Handle non-numeric input
-            JOptionPane.showMessageDialog(null, "Error: Enter correct data");
-            textField.setText("0");
+        	dataError++;          
         }
     	return value;
 	}
@@ -127,30 +137,67 @@ public class RightPanel extends JPanel {
 		int value = 0;
 		try {
             // Attempt to parse the text from the text field to an int
-            value = Math.abs(Integer.parseInt(textField.getText()));
+            value = Math.abs(Integer.parseInt(textField.getText()));          
         } catch (NumberFormatException ex) {
-            // Handle non-numeric input
-            JOptionPane.showMessageDialog(null, "Error: Enter correct data");
-            textField.setText("0");
+        	dataError++;           
         }
     	return value;
 	}
-	// getter functions
-	private List<Integer> retrieveIntParameters() {
-		 List<Integer> intParameters = new ArrayList<>();
-		 intParameters.add(tryCatchInt(gridSizeTextFieldM));
-		 intParameters.add(tryCatchInt(gridSizeTextFieldN));
-		 intParameters.add(tryCatchInt(numOfSimulationTextField));
-		 intParameters.add(tryCatchInt(simulationTimeTextField));
-		 return intParameters;
+		
+	
+	// getter functions	
+	private int retrieveGridSizeM() {
+		return tryCatchInt(gridSizeTextFieldM);
+	}
+	private int retrieveGridSizeN() {
+		return tryCatchInt(gridSizeTextFieldN);
+	}
+	private int retrieveNumOfSimulation() {
+		return tryCatchInt(numOfSimulationTextField);
+	}
+	private int retrieveSimulationTime() {
+		return tryCatchInt(simulationTimeTextField);
 	}
 	
-	private List<Double> retrieveDoubleParameters() {
-		 List<Double> doubleParameters = new ArrayList<>();
-		 doubleParameters.add(tryCatchDouble(transRateTextField));
-		 doubleParameters.add(tryCatchDouble(recoveryRateTextField));		 
-		 return doubleParameters;
-	}	
-    
+	private double retrieveTransRate() {
+		return tryCatchDouble(transRateTextField);
+	}
+	private double retrieveRecoveryRate() {
+		return tryCatchDouble(recoveryRateTextField);
+	}
+	
+	private List<List<Integer>> retrieveInitialDistribution() {
+		// Define the regex pattern for the specified format
+        String pattern = "\\d+,\\d+(;\\d+,\\d+)*"; // Matches digit(s), followed by a comma, followed by digit(s), followed by zero or more occurrences of (semicolon, digit(s), comma, digit(s))
+        
+        List<Integer> xCoordinates = new ArrayList<>();
+        List<Integer> yCoordinates = new ArrayList<>();
+        List<List<Integer>> xyCoordinatesLists = new ArrayList<>();
+                      
+        // Create a Pattern object
+        Pattern p = Pattern.compile(pattern);
+
+        // Create a Matcher object
+        Matcher m = p.matcher(initDistributionTextField.getText());            
+        
+        // If input matches, parse the coordinates
+        if (m.matches()) {       	
+        	String[] pairs = initDistributionTextField.getText().split(";");
+            for (String pair : pairs) {
+                String[] coordinates = pair.split(",");
+                int x = Integer.parseInt(coordinates[0]);
+                int y = Integer.parseInt(coordinates[1]);
+                xCoordinates.add(x);
+                yCoordinates.add(y);
+            }                                          	
+        } else {
+        	dataError++;
+        }   
+        xyCoordinatesLists.add(xCoordinates);
+        xyCoordinatesLists.add(yCoordinates);
+        
+		return xyCoordinatesLists;
+	}
+	    
 }
 

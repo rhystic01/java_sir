@@ -5,16 +5,20 @@ import java.util.List;
 public class SirCalculator {
 	private double transRate, recoveryRate;
 	private int gridSizeM, gridSizeN, numOfSims, simTime;
+	private List<Integer> initialDistX;
+	private List<Integer> initialDistY;
 	
-	public void loadParameters(List<Double> doubleParameters, List<Integer> integerParameters) {
+	public void loadParameters(double transRate, double recoveryRate, int gridSizeM,
+			int gridSizeN, int numOfSims, int simTime, List<List<Integer>> initialDistXY) {
 		
-		this.transRate = doubleParameters.get(0);
-		this.recoveryRate = doubleParameters.get(1);
-		
-		this.gridSizeM = integerParameters.get(0);
-		this.gridSizeN = integerParameters.get(1);
-		this.numOfSims = integerParameters.get(2);
-		this.simTime = integerParameters.get(3);
+		this.transRate = transRate;
+		this.recoveryRate = recoveryRate;		
+		this.gridSizeM = gridSizeM;
+		this.gridSizeN = gridSizeN;
+		this.numOfSims = numOfSims;
+		this.simTime = simTime;		
+		this.initialDistX = initialDistXY.get(0);
+		this.initialDistY = initialDistXY.get(1);
 	}
 	
 	public void test() {
@@ -25,6 +29,9 @@ public class SirCalculator {
 		System.out.println("gridSizeN: " + gridSizeN);
 		System.out.println("numOfSims: " + numOfSims);
 		System.out.println("simTime: " + simTime);
+		for(int i=0; i<initialDistX.size();i++) {
+			System.out.println(initialDistX.get(i) + " " + initialDistY.get(i));
+		}
 	}
 		
 }

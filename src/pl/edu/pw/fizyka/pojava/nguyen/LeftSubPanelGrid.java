@@ -16,4 +16,8 @@ public class LeftSubPanelGrid extends JPanel {
         Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 5);
         this.setBorder(border);
     }
+    
+    public void showGrid() {
+    	
+    }
 }
