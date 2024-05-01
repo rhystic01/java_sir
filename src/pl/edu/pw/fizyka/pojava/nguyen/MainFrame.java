@@ -1,6 +1,8 @@
 package pl.edu.pw.fizyka.pojava.nguyen;
 
 import java.awt.Dimension;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -12,12 +14,15 @@ public class MainFrame extends JFrame {
         setTitle("SIR Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid();
+        BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();
+        
+        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue);
         LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
         
-        SirCalculator sirCalculator = new SirCalculator(leftSubPanelGrid);
-        RightPanel rightPanel = new RightPanel(sirCalculator);
+        SirCalculator sirCalculator = new SirCalculator(queue);
+        
+        RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid);
         
         MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);
         
@@ -35,9 +40,10 @@ public class MainFrame extends JFrame {
         setVisible(true);               
         
     }
+	
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainFrame();
-        });
+        }); 
     }
 }

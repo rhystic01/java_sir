@@ -20,7 +20,7 @@ public class RightPanel extends JPanel {
     private int dataError = 0;
      
 	// GUI setup
-	public RightPanel(SirCalculator sirCalculator) {    	
+	public RightPanel(SirCalculator sirCalculator, LeftSubPanelGrid leftSubPanelGrid) {    	
     	this.sirCalculator = sirCalculator;
     	
     	add(Box.createRigidArea(new Dimension(0, 12)));
@@ -77,6 +77,18 @@ public class RightPanel extends JPanel {
         add(simulationTimeTextField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         
+        // Animation speed slider
+        animationSpeedLabel = new JLabel("Animation speed");
+    	add(animationSpeedLabel);      
+        add(Box.createRigidArea(new Dimension(0, 12)));        
+        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 31, 1);        
+        animationSpeedSlider.setMajorTickSpacing(9);
+        animationSpeedSlider.setPaintTicks(true);
+        animationSpeedSlider.setPaintLabels(true);
+        animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
+        // animationSpeedSlider.addChangeListener(rightPanelController);
+        add(animationSpeedSlider);
+        
         // Start/Stop button
         startStopButton = new JButton("Start/Stop");
         startStopButton.addActionListener(new ActionListener() {
@@ -84,32 +96,26 @@ public class RightPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	// First load the parameters into the SirCalculator class
             	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(), retrieveGridSizeN(),
-            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());            	            	
+            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());
+            	leftSubPanelGrid.setAnimationSpeed(animationSpeedSlider.getValue());
             	// Only if the loaded data is valid for calculations, run the calculation method
-            	if(dataError == 0 && isInitialDistValid()) {
-            		Thread thread = new Thread(sirCalculator);
-            		thread.start();
-            	} else {
+            	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) {            		
+            		Thread calculationThread = new Thread(sirCalculator);
+                    Thread gridDisplayThread = new Thread(leftSubPanelGrid);
+                    calculationThread.start();
+                    gridDisplayThread.start();                   
+            	} else if(dataError != 0 || !isInitialDistValid()){
             		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value",
             				"Input data error", JOptionPane.ERROR_MESSAGE);
-            	}      
+            	} else if(sirCalculator.isRunning() || leftSubPanelGrid.isRunning()) {
+            		sirCalculator.stop();
+            		leftSubPanelGrid.stop();
+            	} 
             	dataError = 0;
             }
         });
         add(startStopButton);
-        add(Box.createRigidArea(new Dimension(0, 30)));
-        
-        // Animation speed slider
-        animationSpeedLabel = new JLabel("Animation speed");
-    	add(animationSpeedLabel);      
-        add(Box.createRigidArea(new Dimension(0, 12)));        
-        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 1);        
-        animationSpeedSlider.setMajorTickSpacing(10);
-        animationSpeedSlider.setPaintTicks(true);
-        animationSpeedSlider.setPaintLabels(true);
-        animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
-        // animationSpeedSlider.addChangeListener(rightPanelController);
-        add(animationSpeedSlider);
+        add(Box.createRigidArea(new Dimension(0, 30)));       
         
         // Setting the size of text fields
         transRateTextField.setMaximumSize(new Dimension(200, transRateTextField.getPreferredSize().height));

@@ -1,6 +1,7 @@
 package pl.edu.pw.fizyka.pojava.nguyen;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class SirCalculator implements Runnable {
 	private double transRate, recoveryRate;
@@ -8,10 +9,12 @@ public class SirCalculator implements Runnable {
 	private List<Integer> initialDistX;
 	private List<Integer> initialDistY;
 	private String[][] grid;
-	private DataCallback callback;
+	//private DataCallback callback;
+	private BlockingQueue<String[][]> queue;
+	private volatile boolean running = false;
 	
-	 public SirCalculator(DataCallback callback) {
-	        this.callback = callback;
+	 public SirCalculator(BlockingQueue<String[][]> queue) {
+	        this.queue = queue;	        
 	    }
 	
 	// method allowing passing of the simulation parameters to this class
@@ -52,26 +55,19 @@ public class SirCalculator implements Runnable {
 	}
 	public List<Integer> getInitialDistY(){
 		return this.initialDistY;
+	}	
+	public boolean isRunning() {
+		return this.running;
 	}
 	
-	// test function outputting parameters to console
-	public void printParamsToConsole() {
-		System.out.println("started calculation");
-		System.out.println("transRate: " + transRate);
-		System.out.println("recoveryRate: " + recoveryRate);
-		System.out.println("gridSizeM: " + gridSizeM);
-		System.out.println("gridSizeN: " + gridSizeN);
-		System.out.println("numOfSims: " + numOfSims);
-		System.out.println("simTime: " + simTime);
-		System.out.print("Initial infected dist: ");		
-		for(int i=0; i<initialDistX.size();i++) {
-			System.out.print(initialDistX.get(i) + "," + initialDistY.get(i) + " ");
-		}
-		System.out.println();
+	public void stop() {
+		this.running = false;
+		this.queue.clear();
 	}
 	
 	@Override
-    public void run() {
+    public void run() {	
+		this.running = true;
 		// Create initial grid of the requested size and initial distribution
 		grid = new String[gridSizeM][gridSizeN];		
 		for(int aa=0; aa<gridSizeM; aa++) {
@@ -83,17 +79,17 @@ public class SirCalculator implements Runnable {
 			grid[initialDistX.get(cc)][initialDistY.get(cc)] = "I";
 		}
 		
-		/*for (int ii = 0; ii < grid.length; ii++) {
-		    for (int jj = 0; jj < grid[ii].length; jj++) {
-		        System.out.print(grid[ii][jj] + " ");
-		    }
-		    System.out.println();
-		}
-		System.out.println();*/
+		try {
+            // Put data into the queue
+            queue.put(grid);	                
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 		
 		// Calculation logic as described in the specification of the project
-		String currentState;				
-		for(int dd=0; dd<simTime; dd++) {
+		String currentState;
+		int dd = 0;
+		while(dd<simTime && running) {
 			// Create a new grid as a copy of the initial grid
 			String[][] nextGrid = new String[grid.length][];
 			for (int kk = 0; kk < grid.length; kk++) {
@@ -138,9 +134,16 @@ public class SirCalculator implements Runnable {
 				}
 			}
 			grid = nextGrid;
-			// Send data to callback       
-	        callback.onDataCalculated(grid);
+			try {
+                // Put data into the queue
+                queue.put(grid);	                
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+			
+			dd++;
 		}
-		        
+		dd = 0;
+		this.running = false;
     }
 }
