@@ -79,17 +79,19 @@ public class RightPanel extends JPanel {
         
         // Start/Stop button
         startStopButton = new JButton("Start/Stop");
-        //startStopButton.addActionListener(rightPanelController);
         startStopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	// First load the parameters into the SirCalculator class
             	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(), retrieveGridSizeN(),
-            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());
-            	            	
-            	if(dataError == 0 && isInitialDistValid()) {            		
-                	sirCalculator.printParamsToConsole();
+            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());            	            	
+            	// Only if the loaded data is valid for calculations, run the calculation method
+            	if(dataError == 0 && isInitialDistValid()) {
+            		Thread thread = new Thread(sirCalculator);
+            		thread.start();
             	} else {
-            		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value", "Input data error", JOptionPane.ERROR_MESSAGE);
+            		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value",
+            				"Input data error", JOptionPane.ERROR_MESSAGE);
             	}      
             	dataError = 0;
             }

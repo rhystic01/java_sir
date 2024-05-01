@@ -16,7 +16,7 @@ public class MainFrame extends JFrame {
         LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
         
-        SirCalculator sirCalculator = new SirCalculator();
+        SirCalculator sirCalculator = new SirCalculator(leftSubPanelGrid);
         RightPanel rightPanel = new RightPanel(sirCalculator);
         
         MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);
@@ -32,8 +32,7 @@ public class MainFrame extends JFrame {
         add(mainPanel);
         pack();
         setLocationRelativeTo(null); // Center frame on screen
-        setVisible(true);
-                
+        setVisible(true);               
         
     }
     public static void main(String[] args) {

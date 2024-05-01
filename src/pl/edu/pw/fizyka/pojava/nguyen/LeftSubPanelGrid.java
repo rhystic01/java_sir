@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 @SuppressWarnings("serial")
-public class LeftSubPanelGrid extends JPanel {
+public class LeftSubPanelGrid extends JPanel implements DataCallback {
     public LeftSubPanelGrid() {
         JLabel label = new JLabel("Simulation animation grid");
         add(label);
@@ -15,9 +15,19 @@ public class LeftSubPanelGrid extends JPanel {
         
         Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 5);
         this.setBorder(border);
+       
     }
     
-    public void showGrid() {
+    @Override
+    public void onDataCalculated(String[][] grid) {
+    	for (int i = 0; i < grid.length; i++) {
+		    for (int j = 0; j < grid[i].length; j++) {
+		        System.out.print(grid[i][j] + " ");
+		    }
+		    System.out.println();
+    	}
+    	System.out.println();
     	
-    }
+    }       
+    
 }
