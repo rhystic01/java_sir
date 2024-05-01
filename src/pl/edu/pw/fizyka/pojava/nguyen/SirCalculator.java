@@ -21,7 +21,7 @@ public class SirCalculator {
 		this.initialDistY = initialDistXY.get(1);
 	}
 	
-	public void test() {
+	public void printParamsToConsole() {
 		System.out.println("started calculation");
 		System.out.println("transRate: " + transRate);
 		System.out.println("recoveryRate: " + recoveryRate);
@@ -29,8 +29,9 @@ public class SirCalculator {
 		System.out.println("gridSizeN: " + gridSizeN);
 		System.out.println("numOfSims: " + numOfSims);
 		System.out.println("simTime: " + simTime);
+		System.out.print("Initial infected dist: ");		
 		for(int i=0; i<initialDistX.size();i++) {
-			System.out.println(initialDistX.get(i) + " " + initialDistY.get(i));
+			System.out.print(initialDistX.get(i) + "," + initialDistY.get(i) + " ");
 		}
 	}
 		

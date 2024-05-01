@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
@@ -21,7 +19,7 @@ public class RightPanel extends JPanel {
     private JPanel gridSizeFieldsPanel;
     private int dataError = 0;
      
-	// contructor sets up UI elements and adds listeners
+	// GUI setup
 	public RightPanel(SirCalculator sirCalculator) {    	
     	this.sirCalculator = sirCalculator;
     	
@@ -48,8 +46,8 @@ public class RightPanel extends JPanel {
         xLabel = new JLabel("x");        
         gridSizeLabel = new JLabel("Grid size");
     	add(gridSizeLabel);       
-        gridSizeTextFieldM = new JTextField("0");        
-        gridSizeTextFieldN = new JTextField("0");
+        gridSizeTextFieldM = new JTextField("1");        
+        gridSizeTextFieldN = new JTextField("1");
         gridSizeFieldsPanel.add(gridSizeTextFieldM);
         gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
         gridSizeFieldsPanel.add(xLabel);
@@ -87,10 +85,9 @@ public class RightPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(), retrieveGridSizeN(),
             			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());
-            	
-            	System.out.println(dataError);
-            	if(dataError == 0) {            		
-                	sirCalculator.test();
+            	            	
+            	if(dataError == 0 && isInitialDistValid()) {            		
+                	sirCalculator.printParamsToConsole();
             	} else {
             		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value", "Input data error", JOptionPane.ERROR_MESSAGE);
             	}      
@@ -121,7 +118,8 @@ public class RightPanel extends JPanel {
         simulationTimeTextField.setMaximumSize(new Dimension(200, simulationTimeTextField.getPreferredSize().height));
         initDistributionTextField.setMaximumSize(new Dimension(200, initDistributionTextField.getPreferredSize().height));               
     }
-	// local helper functions to retrieve and parse from textfield
+	
+	// Helper functions to parse the textfield data
 	private double tryCatchDouble(JTextField textField) {
 		double value = 0;
 		try {
@@ -143,9 +141,8 @@ public class RightPanel extends JPanel {
         }
     	return value;
 	}
-		
-	
-	// getter functions	
+			
+	// Functions returning the specified parameters from text fields	
 	private int retrieveGridSizeM() {
 		return tryCatchInt(gridSizeTextFieldM);
 	}
@@ -164,11 +161,12 @@ public class RightPanel extends JPanel {
 	}
 	private double retrieveRecoveryRate() {
 		return tryCatchDouble(recoveryRateTextField);
-	}
-	
+	}	
 	private List<List<Integer>> retrieveInitialDistribution() {
 		// Define the regex pattern for the specified format
-        String pattern = "\\d+,\\d+(;\\d+,\\d+)*"; // Matches digit(s), followed by a comma, followed by digit(s), followed by zero or more occurrences of (semicolon, digit(s), comma, digit(s))
+		// Matches digit(s), followed by a comma, followed by digit(s),
+		// followed by zero or more occurrences of (semicolon, digit(s), comma, digit(s))
+        String pattern = "\\d+,\\d+(;\\d+,\\d+)*"; 
         
         List<Integer> xCoordinates = new ArrayList<>();
         List<Integer> yCoordinates = new ArrayList<>();
@@ -198,6 +196,23 @@ public class RightPanel extends JPanel {
         
 		return xyCoordinatesLists;
 	}
-	    
+	
+	// Function checking if initial distribution is valid for the chosen grid size
+	private boolean isInitialDistValid() {
+		boolean isValid = true;
+		List<Integer> initialDistX = retrieveInitialDistribution().get(0);
+		List<Integer> initialDistY = retrieveInitialDistribution().get(1);
+		int maxAllowedX = retrieveGridSizeM() - 1;
+		int maxAllowedY = retrieveGridSizeN() - 1;
+		
+		for(int xCoordinate : initialDistX) {
+			if(xCoordinate > maxAllowedX || xCoordinate < 0) isValid = false;
+		}
+		for(int yCoordinate : initialDistY) {
+			if(yCoordinate > maxAllowedY || yCoordinate < 0) isValid = false;
+		}
+		
+		return isValid;
+	}
 }
 
