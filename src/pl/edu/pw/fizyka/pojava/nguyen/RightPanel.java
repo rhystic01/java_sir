@@ -29,14 +29,14 @@ public class RightPanel extends JPanel {
     	this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     	transRateLabel = new JLabel("Transmission rate");
     	add(transRateLabel);
-    	transRateTextField = new JTextField("0");
+    	transRateTextField = new JTextField("0.33");
         add(transRateTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
         // Recovery rate user input area
         recoveryRateLabel = new JLabel("Recovery rate");
     	add(recoveryRateLabel);
-        recoveryRateTextField = new JTextField("0");
+        recoveryRateTextField = new JTextField("0.22");
         add(recoveryRateTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
@@ -46,8 +46,8 @@ public class RightPanel extends JPanel {
         xLabel = new JLabel("x");        
         gridSizeLabel = new JLabel("Grid size");
     	add(gridSizeLabel);       
-        gridSizeTextFieldM = new JTextField("1");        
-        gridSizeTextFieldN = new JTextField("1");
+        gridSizeTextFieldM = new JTextField("60");        
+        gridSizeTextFieldN = new JTextField("60");
         gridSizeFieldsPanel.add(gridSizeTextFieldM);
         gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
         gridSizeFieldsPanel.add(xLabel);
@@ -59,21 +59,21 @@ public class RightPanel extends JPanel {
         // Initial infected distribution user input area
         initDistributionLabel = new JLabel("Initial infected distribution");
     	add(initDistributionLabel);       
-        initDistributionTextField = new JTextField("0,0");
+        initDistributionTextField = new JTextField("29,29");
         add(initDistributionTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
        
         // Number of simulations user input area
         numOfSimulationLabel = new JLabel("Number of simulations");
     	add(numOfSimulationLabel);
-        numOfSimulationTextField = new JTextField("0");
+        numOfSimulationTextField = new JTextField("1");
         add(numOfSimulationTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
         // Simulation time user input area
         simulationTimeLabel = new JLabel("Simulation time");
     	add(simulationTimeLabel);
-        simulationTimeTextField = new JTextField("0");
+        simulationTimeTextField = new JTextField("200");
         add(simulationTimeTextField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         
@@ -81,32 +81,37 @@ public class RightPanel extends JPanel {
         animationSpeedLabel = new JLabel("Animation speed");
     	add(animationSpeedLabel);      
         add(Box.createRigidArea(new Dimension(0, 12)));        
-        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 31, 1);        
+        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);        
         animationSpeedSlider.setMajorTickSpacing(9);
         animationSpeedSlider.setPaintTicks(true);
         animationSpeedSlider.setPaintLabels(true);
         animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
-        // animationSpeedSlider.addChangeListener(rightPanelController);
         add(animationSpeedSlider);
+              
         
         // Start/Stop button
         startStopButton = new JButton("Start/Stop");
         startStopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	// First load the parameters into the SirCalculator class
-            	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(), retrieveGridSizeN(),
-            			retrieveNumOfSimulation(), retrieveSimulationTime(), retrieveInitialDistribution());
-            	leftSubPanelGrid.setAnimationSpeed(animationSpeedSlider.getValue());
-            	// Only if the loaded data is valid for calculations, run the calculation method
-            	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) {            		
+            	// First load the parameters into the SirCalculator class and set animation speed
+            	sirCalculator.loadParameters(retrieveTransRate(), retrieveRecoveryRate(), retrieveGridSizeM(),
+            			retrieveGridSizeN(), retrieveNumOfSimulation(), retrieveSimulationTime(),		
+            			retrieveInitialDistribution("x"), retrieveInitialDistribution("y"));            	
+            	leftSubPanelGrid.setAnimationSpeed(animationSpeedSlider.getValue());            	
+            	// Only if the loaded data is valid and threads are not running, run the calculation and display threads
+            	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) { 
+            		//leftSubPanelGrid.initializeGrid(sirCalculator.getGridSizeM(), sirCalculator.getGridSizeN());
             		Thread calculationThread = new Thread(sirCalculator);
                     Thread gridDisplayThread = new Thread(leftSubPanelGrid);
+                    
                     calculationThread.start();
-                    gridDisplayThread.start();                   
+                    gridDisplayThread.start();        
+                // Show error message if data is invalid    
             	} else if(dataError != 0 || !isInitialDistValid()){
             		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value",
             				"Input data error", JOptionPane.ERROR_MESSAGE);
+            	// if threads are running already, stop them
             	} else if(sirCalculator.isRunning() || leftSubPanelGrid.isRunning()) {
             		sirCalculator.stop();
             		leftSubPanelGrid.stop();
@@ -115,7 +120,8 @@ public class RightPanel extends JPanel {
             }
         });
         add(startStopButton);
-        add(Box.createRigidArea(new Dimension(0, 30)));       
+        add(Box.createRigidArea(new Dimension(0, 30)));   
+                  	
         
         // Setting the size of text fields
         transRateTextField.setMaximumSize(new Dimension(200, transRateTextField.getPreferredSize().height));
@@ -142,8 +148,8 @@ public class RightPanel extends JPanel {
 	private int tryCatchInt(JTextField textField) {
 		int value = 0;
 		try {
-            // Attempt to parse the text from the text field to an int
-            value = Math.abs(Integer.parseInt(textField.getText()));          
+            // Attempt to parse the text from the text field to an int			
+            value = Math.abs(Integer.parseInt(textField.getText()));            
         } catch (NumberFormatException ex) {
         	dataError++;           
         }
@@ -151,10 +157,10 @@ public class RightPanel extends JPanel {
 	}
 			
 	// Functions returning the specified parameters from text fields	
-	private int retrieveGridSizeM() {
+	private int retrieveGridSizeM() {		
 		return tryCatchInt(gridSizeTextFieldM);
 	}
-	private int retrieveGridSizeN() {
+	private int retrieveGridSizeN() {		
 		return tryCatchInt(gridSizeTextFieldN);
 	}
 	private int retrieveNumOfSimulation() {
@@ -170,46 +176,49 @@ public class RightPanel extends JPanel {
 	private double retrieveRecoveryRate() {
 		return tryCatchDouble(recoveryRateTextField);
 	}	
-	private List<List<Integer>> retrieveInitialDistribution() {
+	private int[] retrieveInitialDistribution(String coordinate) {
 		// Define the regex pattern for the specified format
 		// Matches digit(s), followed by a comma, followed by digit(s),
 		// followed by zero or more occurrences of (semicolon, digit(s), comma, digit(s))
-        String pattern = "\\d+,\\d+(;\\d+,\\d+)*"; 
-        
-        List<Integer> xCoordinates = new ArrayList<>();
-        List<Integer> yCoordinates = new ArrayList<>();
-        List<List<Integer>> xyCoordinatesLists = new ArrayList<>();
+        String pattern = "\\d+,\\d+(;\\d+,\\d+)*";       
                       
         // Create a Pattern object
         Pattern p = Pattern.compile(pattern);
 
         // Create a Matcher object
         Matcher m = p.matcher(initDistributionTextField.getText());            
-        
+        int[] xCoordinates = new int[0];
+        int[] yCoordinates = new int[0];
         // If input matches, parse the coordinates
         if (m.matches()) {       	
         	String[] pairs = initDistributionTextField.getText().split(";");
-            for (String pair : pairs) {
-                String[] coordinates = pair.split(",");
+        	xCoordinates = new int[pairs.length];
+        	yCoordinates = new int[pairs.length];
+            for (int ii=0; ii<pairs.length; ii++) {
+                String[] coordinates = pairs[ii].split(",");
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
-                xCoordinates.add(x);
-                yCoordinates.add(y);
+                xCoordinates[ii] = x;
+                yCoordinates[ii] = y;
+               
             }                                          	
         } else {
         	dataError++;
         }   
-        xyCoordinatesLists.add(xCoordinates);
-        xyCoordinatesLists.add(yCoordinates);
         
-		return xyCoordinatesLists;
+        
+		if(coordinate == "y") {
+			return yCoordinates;
+		} else {
+			return xCoordinates;
+		}		 
 	}
 	
 	// Function checking if initial distribution is valid for the chosen grid size
 	private boolean isInitialDistValid() {
 		boolean isValid = true;
-		List<Integer> initialDistX = retrieveInitialDistribution().get(0);
-		List<Integer> initialDistY = retrieveInitialDistribution().get(1);
+		int[] initialDistX = retrieveInitialDistribution("x");
+		int[] initialDistY = retrieveInitialDistribution("y");
 		int maxAllowedX = retrieveGridSizeM() - 1;
 		int maxAllowedY = retrieveGridSizeN() - 1;
 		

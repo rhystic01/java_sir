@@ -14,21 +14,19 @@ public class MainFrame extends JFrame {
         setTitle("SIR Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();
-        
+        BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>(); //BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();        
         LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue);
-        LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
-        LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
-        
         SirCalculator sirCalculator = new SirCalculator(queue);
         
+        LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
+        LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
         RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid);
         
-        MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);
+        MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);       
+        mainPanel.setPreferredSize(new Dimension(884, 589));        
+                             
         
-        mainPanel.setPreferredSize(new Dimension(884, 589));
-        
-        MyMenuController myMenuController = new MyMenuController();
+        MyMenuController myMenuController = new MyMenuController(leftSubPanelGrid,sirCalculator);
         MyMenu myMenu = new MyMenu(myMenuController);
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(myMenu);
