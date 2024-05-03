@@ -8,7 +8,7 @@ public class SirCalculator implements Runnable {
 	private double transRate, recoveryRate;
 	private int gridSizeM, gridSizeN, numOfSims, simTime;
 	private int[] initialDistX, initialDistY;
-	private int[][] totalSIROverTime;	
+	private double[][] totalSIROverTime, totalAvgSIROverTime;	
 	private short[][] grid; 
 	private BlockingQueue<short[][]> queue;
 	private volatile boolean running = false;
@@ -80,7 +80,7 @@ public class SirCalculator implements Runnable {
 	public boolean isRunning() {
 		return this.running;
 	}
-	public int[][] getTotalSIROverTime(){
+	public double[][] getTotalSIROverTime(){
 		return this.totalSIROverTime;
 	}
 	
@@ -90,10 +90,7 @@ public class SirCalculator implements Runnable {
 		this.queue.clear();
 	}
 	
-	// Calculation thread 
-	@Override
-    public void run() {	
-		this.running = true;
+	private void performStep0Calc() {
 		// Create initial grid of the requested size and initial distribution
 		grid = new short[gridSizeM][gridSizeN];		
 		for(int aa=0; aa<gridSizeM; aa++) {
@@ -114,72 +111,88 @@ public class SirCalculator implements Runnable {
             e.printStackTrace();
         }
 		
-		totalSIROverTime = new int[simTime+1][3];
-		totalSIROverTime[0][0] = getTotalSIR(grid, (short) 0 /*"S"*/);
-		totalSIROverTime[0][1] = getTotalSIR(grid, (short) 1 /*"I"*/);
-		totalSIROverTime[0][2] = getTotalSIR(grid, (short) 2 /*"R"*/);
-		
+		//totalSIROverTime = new double[simTime+1][3];
+		totalSIROverTime[0][0] += getTotalSIR(grid, (short) 0 /*"S"*/);
+		totalSIROverTime[0][1] += getTotalSIR(grid, (short) 1 /*"I"*/);
+		totalSIROverTime[0][2] += getTotalSIR(grid, (short) 2 /*"R"*/);		
+	}
+	
+	// Calculation thread 
+	@Override
+    public void run() {	
+		this.running = true;		
 		// Calculation logic as described in the specification of the project
 		short currentState; 
 		int time = 1;
-		while(time<simTime+1 && running) {
-			// Create a new grid as a copy of the initial grid
-			short[][] nextGrid = new short[grid.length][]; 
-			for (int kk = 0; kk < grid.length; kk++) {
-			    nextGrid[kk] = new short[grid[kk].length];
-			    for (int ll = 0; ll < grid[kk].length; ll++) {
-			        nextGrid[kk][ll] = grid[kk][ll];
-			    }
-			}
-			
-			for(int ee=0; ee<gridSizeM; ee++) {
-				for(int ff=0; ff<gridSizeN; ff++) {
-					currentState = grid[ee][ff];
-					if(currentState == 0) {
-						int startRow = Math.max(0, ee - 1);
-						int endRow = Math.min(gridSizeM, ee + 2);
-						int startCol = Math.max(0, ff - 1);
-						int endCol = Math.min(gridSizeN, ff + 2);
-						outerLoop:
-						for (int gg = startRow; gg < endRow; gg++) {
-						    for (int hh = startCol; hh < endCol; hh++) {
-						        if(grid[gg][hh] == 1) {						        	
-						        	if(Math.random() < transRate) {
-						        		nextGrid[ee][ff] = 1;						        		
-						        	} else {
-						        		nextGrid[ee][ff] = 0;
-						        	}
-						        	break outerLoop;
-						        }
-						    } 
-						}
-					} 
-					else if (currentState == 1) {
-				    	if(Math.random() < recoveryRate) {
-				    		nextGrid[ee][ff] = 2; 
-				    	} else {
-				    		nextGrid[ee][ff] = 1;
-				    	}
+		totalSIROverTime = new double[simTime+1][3];
+		for(int ii=0; ii<this.numOfSims; ii++) {
+			performStep0Calc();			
+			while(time<simTime+1 && running) {
+				// Create a new grid as a copy of the initial grid
+				short[][] nextGrid = new short[grid.length][]; 
+				for (int kk = 0; kk < grid.length; kk++) {
+				    nextGrid[kk] = new short[grid[kk].length];
+				    for (int ll = 0; ll < grid[kk].length; ll++) {
+				        nextGrid[kk][ll] = grid[kk][ll];
 				    }
-					else if (currentState == 2) {
-						nextGrid[ee][ff] = 2;
+				}
+				
+				for(int ee=0; ee<gridSizeM; ee++) {
+					for(int ff=0; ff<gridSizeN; ff++) {
+						currentState = grid[ee][ff];
+						if(currentState == 0) {
+							int startRow = Math.max(0, ee - 1);
+							int endRow = Math.min(gridSizeM, ee + 2);
+							int startCol = Math.max(0, ff - 1);
+							int endCol = Math.min(gridSizeN, ff + 2);
+							outerLoop:
+							for (int gg = startRow; gg < endRow; gg++) {
+							    for (int hh = startCol; hh < endCol; hh++) {
+							        if(grid[gg][hh] == 1) {						        	
+							        	if(Math.random() < transRate) {
+							        		nextGrid[ee][ff] = 1;						        		
+							        	} else {
+							        		nextGrid[ee][ff] = 0;
+							        	}
+							        	break outerLoop;
+							        }
+							    } 
+							}
+						} 
+						else if (currentState == 1) {
+					    	if(Math.random() < recoveryRate) {
+					    		nextGrid[ee][ff] = 2; 
+					    	} else {
+					    		nextGrid[ee][ff] = 1;
+					    	}
+					    }
+						else if (currentState == 2) {
+							nextGrid[ee][ff] = 2;
+						}
 					}
 				}
+				grid = nextGrid;
+				try {
+	                // Put data into the queue
+	                queue.put(grid);	                
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+				totalSIROverTime[time][0] += getTotalSIR(grid, (short)0 /*"S"*/);
+				totalSIROverTime[time][1] += getTotalSIR(grid, (short)1 /*"I"*/);
+				totalSIROverTime[time][2] += getTotalSIR(grid, (short)2 /*"R"*/);
+				
+				time++;
 			}
-			grid = nextGrid;
-			try {
-                // Put data into the queue
-                queue.put(grid);	                
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-			totalSIROverTime[time][0] = getTotalSIR(grid, (short)0 /*"S"*/);
-			totalSIROverTime[time][1] = getTotalSIR(grid, (short)1 /*"I"*/);
-			totalSIROverTime[time][2] = getTotalSIR(grid, (short)2 /*"R"*/);
-			
-			time++;
+			time = 1;
 		}
-		time = 1;
+				
+		for(int jj=0; jj<this.simTime+1;jj++) {
+			totalSIROverTime[jj][0] = totalSIROverTime[jj][0]/this.numOfSims;
+			totalSIROverTime[jj][1] = totalSIROverTime[jj][1]/this.numOfSims;
+			totalSIROverTime[jj][2] = totalSIROverTime[jj][2]/this.numOfSims;
+		}
+		
 		this.running = false;		
     }
 }

@@ -22,9 +22,11 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
 	private JLabel isRunningLabel;
 	private int counter = 0;
 	protected boolean isCellBorderSet = true;
+	private SirCalculator sirCalculator;
 	
-    public LeftSubPanelGrid(BlockingQueue<short[][]> queue) {
+    public LeftSubPanelGrid(BlockingQueue<short[][]> queue, SirCalculator sirCalculator) {
     	this.queue = queue;  
+    	this.sirCalculator = sirCalculator;
     	animPanel = new JPanel();
     	labelPanel = new JPanel();
     	this.setLayout(new BorderLayout());
@@ -86,6 +88,10 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
     	this.queue.clear();
     }
     
+    public void resetTimeCounter() {
+    	this.counter = 0;
+    }
+    
     public void run() {
     	
         this.running = true;
@@ -94,14 +100,14 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (!queue.isEmpty()) {
-                        /*String[][]*/short[][] grid = queue.take(); // Blocking call, waits for data if queue is empty
+                        short[][] grid = queue.take();
                         initializeGrid(grid);                       
                         isRunningLabel.setText("Time (arbitrary): " + counter);
                         counter++;
                     } else {
                         running = false;
                         ((Timer)e.getSource()).stop(); // Stop the timer if queue is empty
-                        isRunningLabel.setText("Time (arbitrary): " + (counter-1) + " (Stopped)");
+                        isRunningLabel.setText("Time (arbitrary): " + (counter-sirCalculator.getNumOfSims()) + " (Stopped)");
                         counter = 0;
                         
                     }

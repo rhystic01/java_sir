@@ -61,7 +61,7 @@ public class MyMenuController implements ActionListener {
         }
 	}
 
-	private String arrayToString(int[][] array) {		
+	private String arrayToString(double[][] array) {		
         StringBuilder sb = new StringBuilder();
         sb.append(formatCoordinates(sirCalculator.getInitialDistX(),sirCalculator.getInitialDistY())+"\n");
         sb.append("transRate: "+sirCalculator.getTransRate()+"; recoveryRate: "+sirCalculator.getRecoveryRate()+

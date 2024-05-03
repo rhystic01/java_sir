@@ -15,8 +15,9 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>(); //BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();        
-        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue);
         SirCalculator sirCalculator = new SirCalculator(queue);
+        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue, sirCalculator);
+        
         
         LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
