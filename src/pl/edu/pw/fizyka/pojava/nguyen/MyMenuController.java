@@ -1,5 +1,6 @@
 package pl.edu.pw.fizyka.pojava.nguyen;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,10 +8,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class MyMenuController implements ActionListener {
 	private LeftSubPanelGrid leftSubPanelGrid;
@@ -108,9 +117,54 @@ public class MyMenuController implements ActionListener {
 			rightPanel.setParametersToEmpty();
 			leftSubPanelGrid.resetAnimationPanel();
 		}
-		else if(e.getActionCommand().equals("Show graphs")) {
-			System.out.println("Show graphs");
-		}
+		else if(e.getActionCommand().equals("Show graphs")) {		
+	        // Create a dataset and add the data points
+	        XYSeries susceptibleSeries = new XYSeries("Susceptible");
+	        XYSeries infectedSeries = new XYSeries("Infected");
+	        XYSeries removedSeries = new XYSeries("Removed");
+	        int ii = 0;
+	        for (double[] point : sirCalculator.getTotalSIROverTime()) {	        	
+	        	susceptibleSeries.add(ii, point[0]);
+	        	infectedSeries.add(ii, point[1]);
+	        	removedSeries.add(ii, point[2]);
+	        	ii++;
+	        }
+	        XYSeriesCollection dataset = new XYSeriesCollection();
+	        dataset.addSeries(susceptibleSeries);
+	        dataset.addSeries(infectedSeries);
+	        dataset.addSeries(removedSeries);
+
+	        // Create the scatter plot using the dataset
+	        JFreeChart chart = ChartFactory.createScatterPlot(
+	                "SIR over time",  // Chart title
+	                "Time (arbitrary)",                // X-axis label
+	                "Number of individuals",                // Y-axis label
+	                dataset,                 // Dataset
+	                PlotOrientation.VERTICAL,
+	                true,                    // Include legend
+	                true,                    // Include tooltips
+	                false                    // Include URLs
+	        );
+
+	        // Customize the plot (if needed)
+	        XYPlot plot = (XYPlot) chart.getPlot();
+	        // Additional customization can be done here
+	        XYItemRenderer renderer = plot.getRenderer();
+	        renderer.setSeriesPaint(0, new Color(50, 230, 113)); 
+	        renderer.setSeriesPaint(1, new Color(245, 60, 60));
+	        renderer.setSeriesPaint(2, new Color(44, 54, 120));
+	        plot.setBackgroundPaint(new Color(240, 240, 240));
+	        plot.setDomainGridlinePaint(Color.BLACK);
+	        plot.setRangeGridlinePaint(Color.BLACK);
+	        
+	        // Display the chart in a frame
+	        JFrame frame = new JFrame("SIR graphs");
+	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        frame.getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
+	        frame.pack();
+	        frame.setVisible(true);
+	    }
+		
 		else if(e.getActionCommand().equals("Read parameters from file")) {
 			System.out.println("Read parameters from file");
 		}

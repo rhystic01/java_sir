@@ -3,14 +3,13 @@ package pl.edu.pw.fizyka.pojava.nguyen;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
+	@SuppressWarnings("unused")
 	private SirCalculator sirCalculator;
 	private JLabel xLabel, transRateLabel, recoveryRateLabel, gridSizeLabel, initDistributionLabel, numOfSimulationLabel, simulationTimeLabel, animationSpeedLabel;
 	private JTextField transRateTextField, recoveryRateTextField, gridSizeTextFieldM, gridSizeTextFieldN, initDistributionTextField, numOfSimulationTextField, simulationTimeTextField; 
@@ -73,7 +72,7 @@ public class RightPanel extends JPanel {
         // Simulation time user input area
         simulationTimeLabel = new JLabel("Simulation time");
     	add(simulationTimeLabel);
-        simulationTimeTextField = new JTextField("75");
+        simulationTimeTextField = new JTextField("70");
         add(simulationTimeTextField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         
@@ -239,7 +238,7 @@ public class RightPanel extends JPanel {
 		gridSizeTextFieldN.setText("30");
 		initDistributionTextField.setText("15,15");
 		numOfSimulationTextField.setText("1");
-		simulationTimeTextField.setText("75");
+		simulationTimeTextField.setText("70");
 		animationSpeedSlider.setValue(20);
 	}
 	

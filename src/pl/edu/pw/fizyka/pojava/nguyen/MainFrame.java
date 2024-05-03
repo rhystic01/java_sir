@@ -17,8 +17,7 @@ public class MainFrame extends JFrame {
         BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>(); //BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();        
         SirCalculator sirCalculator = new SirCalculator(queue);
         LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue, sirCalculator);
-        
-        
+               
         LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
         RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid);

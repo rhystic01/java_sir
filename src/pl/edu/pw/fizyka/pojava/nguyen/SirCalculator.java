@@ -1,14 +1,12 @@
 package pl.edu.pw.fizyka.pojava.nguyen;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class SirCalculator implements Runnable {
 	private double transRate, recoveryRate;
 	private int gridSizeM, gridSizeN, numOfSims, simTime;
 	private int[] initialDistX, initialDistY;
-	private double[][] totalSIROverTime, totalAvgSIROverTime;	
+	private double[][] totalSIROverTime;	
 	private short[][] grid; 
 	private BlockingQueue<short[][]> queue;
 	private volatile boolean running = false;
