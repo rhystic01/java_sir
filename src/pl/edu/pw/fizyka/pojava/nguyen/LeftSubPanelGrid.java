@@ -14,16 +14,16 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class LeftSubPanelGrid extends JPanel implements Runnable {
-	private BlockingQueue<short[][]> queue; //private BlockingQueue<String[][]> queue;
+	private BlockingQueue<short[][]> queue;
 	private int animationSpeed = 2;
 	private volatile boolean running = false;
 	private JPanel[][] gridPanels;
-	private JPanel cellPanel, animPanel, labelPanel;
+	protected JPanel cellPanel, animPanel, labelPanel;
 	private JLabel isRunningLabel;
-	private int counter = 1;
-	protected boolean isCellBorderSet = false;
+	private int counter = 0;
+	protected boolean isCellBorderSet = true;
 	
-    public LeftSubPanelGrid(/*BlockingQueue<String[][]>*/BlockingQueue<short[][]> queue) {
+    public LeftSubPanelGrid(BlockingQueue<short[][]> queue) {
     	this.queue = queue;  
     	animPanel = new JPanel();
     	labelPanel = new JPanel();
@@ -36,7 +36,7 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
     	
     }   
    
-    public void initializeGrid(/*String[][]*/short[][] gridData) {
+    public void initializeGrid(short[][] gridData) {
     	animPanel.removeAll();
         int numRows = gridData.length;
         int numCols = gridData[0].length;
@@ -46,14 +46,14 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 cellPanel = new JPanel();
-                if(isCellBorderSet)cellPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 1));                
+                if(isCellBorderSet) cellPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 30, 30), 1));             
                 
                 // Set background color based on grid data
-                if (/*gridData[row][col].equals("S")*/gridData[row][col] == 0) {
+                if (gridData[row][col] == 0) {
                     cellPanel.setBackground(new Color(50, 230, 113));
-                } else if (/*gridData[row][col].equals("I")*/gridData[row][col] == 1){
+                } else if (gridData[row][col] == 1){
                     cellPanel.setBackground(new Color(245, 60, 60));
-                } else if (/*gridData[row][col].equals("R")*/gridData[row][col] == 2){
+                } else if (gridData[row][col] == 2){
                     cellPanel.setBackground(new Color(44, 54, 120));
                 }
                 
@@ -74,36 +74,18 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
 		return this.running;
 	}
     
+    public void resetAnimationPanel() {
+    	this.animPanel.removeAll();
+    	this.animPanel.revalidate();
+    	this.animPanel.repaint();
+    	this.isRunningLabel.setText("Stopped");
+    }
+    
     public void stop() {
     	this.running = false;
     	this.queue.clear();
     }
     
-    //@Override
-    /*public void run() { 	
-        try {
-        	this.running = true;
-            // Continuously consume data from the queue and display it        	
-            while (running) {
-            	//isRunningLabel.setText("Time: " + time);
-                String[][] grid = queue.take(); // Blocking call, waits for data if queue is empty
-                
-                // display the animation
-                initializeGrid(grid);  
-                
-            	// end of display animation
-            	
-            	Thread.sleep(animationSpeed);
-            	if(queue.isEmpty()) running = false;
-            	
-            }    
-        	
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        queue.clear();
-        this.running = false;    	
-    }*/
     public void run() {
     	
         this.running = true;
@@ -119,8 +101,8 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
                     } else {
                         running = false;
                         ((Timer)e.getSource()).stop(); // Stop the timer if queue is empty
-                        isRunningLabel.setText("Time (arbitrary): " + counter + " (Stopped)");
-                        counter = 1;
+                        isRunningLabel.setText("Time (arbitrary): " + (counter-1) + " (Stopped)");
+                        counter = 0;
                         
                     }
                 } catch (InterruptedException ex) {

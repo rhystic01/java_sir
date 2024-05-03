@@ -15,10 +15,12 @@ import javax.swing.JOptionPane;
 public class MyMenuController implements ActionListener {
 	private LeftSubPanelGrid leftSubPanelGrid;
 	private SirCalculator sirCalculator;
+	private RightPanel rightPanel;
 	
-	public MyMenuController(LeftSubPanelGrid leftSubPanelGrid, SirCalculator sirCalculator) {
+	public MyMenuController(LeftSubPanelGrid leftSubPanelGrid, SirCalculator sirCalculator, RightPanel rightPanel) {
 		this.leftSubPanelGrid = leftSubPanelGrid;
 		this.sirCalculator = sirCalculator;
+		this.rightPanel = rightPanel;
 	}
 	
 	private void writeStringToFile(String string) {
@@ -102,8 +104,9 @@ public class MyMenuController implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Clear parameters")) {
-			System.out.println("Clear parameters");
+		if (e.getActionCommand().equals("Clear parameters and grid")) {
+			rightPanel.setParametersToEmpty();
+			leftSubPanelGrid.resetAnimationPanel();
 		}
 		else if(e.getActionCommand().equals("Show graphs")) {
 			System.out.println("Show graphs");
@@ -120,6 +123,9 @@ public class MyMenuController implements ActionListener {
 			} else if(leftSubPanelGrid.isCellBorderSet) {
 				leftSubPanelGrid.isCellBorderSet = false;				
 			}		
+		}
+		else if(e.getActionCommand().equals("Set parameters to default")) {
+			rightPanel.setParametersToDefault();			
 		}
 		
 	}

@@ -29,14 +29,14 @@ public class RightPanel extends JPanel {
     	this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     	transRateLabel = new JLabel("Transmission rate");
     	add(transRateLabel);
-    	transRateTextField = new JTextField("0.33");
+    	transRateTextField = new JTextField("0.3");
         add(transRateTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
         // Recovery rate user input area
         recoveryRateLabel = new JLabel("Recovery rate");
     	add(recoveryRateLabel);
-        recoveryRateTextField = new JTextField("0.22");
+        recoveryRateTextField = new JTextField("0.2");
         add(recoveryRateTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
         
@@ -46,8 +46,8 @@ public class RightPanel extends JPanel {
         xLabel = new JLabel("x");        
         gridSizeLabel = new JLabel("Grid size");
     	add(gridSizeLabel);       
-        gridSizeTextFieldM = new JTextField("60");        
-        gridSizeTextFieldN = new JTextField("60");
+        gridSizeTextFieldM = new JTextField("30");        
+        gridSizeTextFieldN = new JTextField("30");
         gridSizeFieldsPanel.add(gridSizeTextFieldM);
         gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
         gridSizeFieldsPanel.add(xLabel);
@@ -59,7 +59,7 @@ public class RightPanel extends JPanel {
         // Initial infected distribution user input area
         initDistributionLabel = new JLabel("Initial infected distribution");
     	add(initDistributionLabel);       
-        initDistributionTextField = new JTextField("29,29");
+        initDistributionTextField = new JTextField("15,15");
         add(initDistributionTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
        
@@ -73,7 +73,7 @@ public class RightPanel extends JPanel {
         // Simulation time user input area
         simulationTimeLabel = new JLabel("Simulation time");
     	add(simulationTimeLabel);
-        simulationTimeTextField = new JTextField("200");
+        simulationTimeTextField = new JTextField("75");
         add(simulationTimeTextField);
         add(Box.createRigidArea(new Dimension(0, 20)));
         
@@ -81,7 +81,7 @@ public class RightPanel extends JPanel {
         animationSpeedLabel = new JLabel("Animation speed");
     	add(animationSpeedLabel);      
         add(Box.createRigidArea(new Dimension(0, 12)));        
-        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);        
+        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 20);        
         animationSpeedSlider.setMajorTickSpacing(9);
         animationSpeedSlider.setPaintTicks(true);
         animationSpeedSlider.setPaintLabels(true);
@@ -230,6 +230,28 @@ public class RightPanel extends JPanel {
 		}
 		
 		return isValid;
+	}
+	
+	public void setParametersToDefault() {
+		transRateTextField.setText("0.3");
+		recoveryRateTextField.setText("0.2");
+		gridSizeTextFieldM.setText("30");
+		gridSizeTextFieldN.setText("30");
+		initDistributionTextField.setText("15,15");
+		numOfSimulationTextField.setText("1");
+		simulationTimeTextField.setText("75");
+		animationSpeedSlider.setValue(20);
+	}
+	
+	public void setParametersToEmpty() {
+		transRateTextField.setText("");
+		recoveryRateTextField.setText("");
+		gridSizeTextFieldM.setText("");
+		gridSizeTextFieldN.setText("");
+		initDistributionTextField.setText("");
+		numOfSimulationTextField.setText("");
+		simulationTimeTextField.setText("");
+		animationSpeedSlider.setValue(1);
 	}
 }
 

@@ -9,11 +9,11 @@ public class SirCalculator implements Runnable {
 	private int gridSizeM, gridSizeN, numOfSims, simTime;
 	private int[] initialDistX, initialDistY;
 	private int[][] totalSIROverTime;	
-	private short[][] grid; //private String[][] grid;
-	private BlockingQueue<short[][]> queue; //private BlockingQueue<String[][]> queue;
+	private short[][] grid; 
+	private BlockingQueue<short[][]> queue;
 	private volatile boolean running = false;
 	
-	 public SirCalculator(/*BlockingQueue<String[][]>*/ BlockingQueue<short[][]> queue) {
+	 public SirCalculator(BlockingQueue<short[][]> queue) {
 	        this.queue = queue;	        
 	 }
 	
@@ -29,14 +29,10 @@ public class SirCalculator implements Runnable {
 		this.simTime = simTime;		
 		this.initialDistX = initialDistX;
 		this.initialDistY = initialDistY;
-		// adding initial total number of S, I, R
-		/*this.numOfSusceptible[0] = (this.gridSizeM * this.gridSizeN) - this.initialDistX.length;
-		this.numOfInfected[0] = this.initialDistX.length;
-		this.numOfRemoved[0] = 0;*/
 	}
 	
 	// function calculating current total number of S, I, R in the grid
-	private int getTotalSIR(/*String[][] grid, String state*/ short[][] grid, short state) {
+	private int getTotalSIR(short[][] grid, short state) {
 		int susceptible = 0;
 		int infected = 0;
 		int removed = 0;
@@ -102,13 +98,13 @@ public class SirCalculator implements Runnable {
 		grid = new short[gridSizeM][gridSizeN];		
 		for(int aa=0; aa<gridSizeM; aa++) {
 			for(int bb=0; bb<gridSizeN; bb++) {
-				grid[aa][bb] = 0; //grid[aa][bb] = "0";
+				grid[aa][bb] = 0; 
 			}
 		}	
 		for(int cc=0; cc<initialDistX.length; cc++) {
 			int xValue = initialDistX[cc];
 			int yValue = initialDistY[cc];
-			grid[xValue][yValue] = 1; //grid[xValue][yValue] = "1";
+			grid[xValue][yValue] = 1; ;
 		}
 		
 		try {
@@ -118,17 +114,17 @@ public class SirCalculator implements Runnable {
             e.printStackTrace();
         }
 		
-		totalSIROverTime = new int[simTime][3];
+		totalSIROverTime = new int[simTime+1][3];
 		totalSIROverTime[0][0] = getTotalSIR(grid, (short) 0 /*"S"*/);
-		totalSIROverTime[0][1] = getTotalSIR(grid, (short)1/*"I"*/);
-		totalSIROverTime[0][2] = getTotalSIR(grid, (short) 2/*"R"*/);
+		totalSIROverTime[0][1] = getTotalSIR(grid, (short) 1 /*"I"*/);
+		totalSIROverTime[0][2] = getTotalSIR(grid, (short) 2 /*"R"*/);
 		
 		// Calculation logic as described in the specification of the project
-		short currentState; //String currentState;
+		short currentState; 
 		int time = 1;
-		while(time<simTime && running) {
+		while(time<simTime+1 && running) {
 			// Create a new grid as a copy of the initial grid
-			short[][] nextGrid = new short[grid.length][]; //String[][] nextGrid = new String[grid.length][];
+			short[][] nextGrid = new short[grid.length][]; 
 			for (int kk = 0; kk < grid.length; kk++) {
 			    nextGrid[kk] = new short[grid[kk].length];
 			    for (int ll = 0; ll < grid[kk].length; ll++) {

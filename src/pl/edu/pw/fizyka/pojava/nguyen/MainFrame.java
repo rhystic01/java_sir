@@ -23,10 +23,9 @@ public class MainFrame extends JFrame {
         RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid);
         
         MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);       
-        mainPanel.setPreferredSize(new Dimension(884, 589));        
-                             
+        mainPanel.setPreferredSize(new Dimension(700, 700));                                    
         
-        MyMenuController myMenuController = new MyMenuController(leftSubPanelGrid,sirCalculator);
+        MyMenuController myMenuController = new MyMenuController(leftSubPanelGrid,sirCalculator,rightPanel);
         MyMenu myMenu = new MyMenu(myMenuController);
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(myMenu);
