@@ -229,27 +229,16 @@ public class RightPanel extends JPanel {
 		return isValid;
 	}
 	
-	// Set parameter text fields to default values
-	public void setParametersToDefault() {
-		transRateTextField.setText("0.3");
-		recoveryRateTextField.setText("0.2");
-		gridSizeTextFieldM.setText("30");
-		gridSizeTextFieldN.setText("30");
-		initDistributionTextField.setText("15,15");
-		numOfSimulationTextField.setText("1");
-		simulationTimeTextField.setText("70");
-		animationSpeedSlider.setValue(20);
-	}
-	// Set parameters text fields to empty values
-	public void setParametersToEmpty() {
-		transRateTextField.setText("");
-		recoveryRateTextField.setText("");
-		gridSizeTextFieldM.setText("");
-		gridSizeTextFieldN.setText("");
-		initDistributionTextField.setText("");
-		numOfSimulationTextField.setText("");
-		simulationTimeTextField.setText("");
-		animationSpeedSlider.setValue(1);
+	public void setParameters(String transRate, String recovRate, String gridSizeM, String gridSizeN,
+			String numOfSims, String simTime, String animationSpeed, String initDistribution) {
+		transRateTextField.setText(transRate);
+		recoveryRateTextField.setText(recovRate);
+		gridSizeTextFieldM.setText(gridSizeM);
+		gridSizeTextFieldN.setText(gridSizeN);
+		initDistributionTextField.setText(initDistribution);
+		numOfSimulationTextField.setText(numOfSims);
+		simulationTimeTextField.setText(simTime);	
+		animationSpeedSlider.setValue(Integer.parseInt(animationSpeed));
 	}
 }
 
