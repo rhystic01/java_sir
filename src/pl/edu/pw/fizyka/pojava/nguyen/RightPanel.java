@@ -86,10 +86,21 @@ public class RightPanel extends JPanel {
         animationSpeedSlider.setPaintLabels(true);
         animationSpeedSlider.setMaximumSize(new Dimension(300, animationSpeedSlider.getPreferredSize().height));
         add(animationSpeedSlider);
-              
         
+        // Setting the size of text fields
+        transRateTextField.setMaximumSize(new Dimension(200, transRateTextField.getPreferredSize().height));
+        recoveryRateTextField.setMaximumSize(new Dimension(200, recoveryRateTextField.getPreferredSize().height));
+        gridSizeTextFieldM.setMaximumSize(new Dimension(50, gridSizeTextFieldM.getPreferredSize().height));
+        gridSizeTextFieldN.setMaximumSize(new Dimension(50, gridSizeTextFieldN.getPreferredSize().height));
+        numOfSimulationTextField.setMaximumSize(new Dimension(200, numOfSimulationTextField.getPreferredSize().height));
+        simulationTimeTextField.setMaximumSize(new Dimension(200, simulationTimeTextField.getPreferredSize().height));
+        initDistributionTextField.setMaximumSize(new Dimension(200, initDistributionTextField.getPreferredSize().height)); 
+                     
         // Start/Stop button
         startStopButton = new JButton("Start/Stop");
+        add(Box.createRigidArea(new Dimension(0, 30)));  
+        add(startStopButton);      
+        // Start/Stop button logic
         startStopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,12 +109,11 @@ public class RightPanel extends JPanel {
             			retrieveGridSizeN(), retrieveNumOfSimulation(), retrieveSimulationTime(),		
             			retrieveInitialDistribution("x"), retrieveInitialDistribution("y"));            	
             	leftSubPanelGrid.setAnimationSpeed(animationSpeedSlider.getValue());            	
+            	
             	// Only if the loaded data is valid and threads are not running, run the calculation and display threads
             	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) { 
-            		//leftSubPanelGrid.initializeGrid(sirCalculator.getGridSizeM(), sirCalculator.getGridSizeN());
             		Thread calculationThread = new Thread(sirCalculator);
-                    Thread gridDisplayThread = new Thread(leftSubPanelGrid);
-                    
+                    Thread gridDisplayThread = new Thread(leftSubPanelGrid);                    
                     calculationThread.start();
                     gridDisplayThread.start();        
                 // Show error message if data is invalid    
@@ -117,19 +127,7 @@ public class RightPanel extends JPanel {
             	} 
             	dataError = 0;
             }
-        });
-        add(startStopButton);
-        add(Box.createRigidArea(new Dimension(0, 30)));   
-                  	
-        
-        // Setting the size of text fields
-        transRateTextField.setMaximumSize(new Dimension(200, transRateTextField.getPreferredSize().height));
-        recoveryRateTextField.setMaximumSize(new Dimension(200, recoveryRateTextField.getPreferredSize().height));
-        gridSizeTextFieldM.setMaximumSize(new Dimension(50, gridSizeTextFieldM.getPreferredSize().height));
-        gridSizeTextFieldN.setMaximumSize(new Dimension(50, gridSizeTextFieldN.getPreferredSize().height));
-        numOfSimulationTextField.setMaximumSize(new Dimension(200, numOfSimulationTextField.getPreferredSize().height));
-        simulationTimeTextField.setMaximumSize(new Dimension(200, simulationTimeTextField.getPreferredSize().height));
-        initDistributionTextField.setMaximumSize(new Dimension(200, initDistributionTextField.getPreferredSize().height));               
+        });                           	                            
     }
 	
 	// Helper functions to parse the textfield data
@@ -231,6 +229,7 @@ public class RightPanel extends JPanel {
 		return isValid;
 	}
 	
+	// Set parameter text fields to default values
 	public void setParametersToDefault() {
 		transRateTextField.setText("0.3");
 		recoveryRateTextField.setText("0.2");
@@ -241,7 +240,7 @@ public class RightPanel extends JPanel {
 		simulationTimeTextField.setText("70");
 		animationSpeedSlider.setValue(20);
 	}
-	
+	// Set parameters text fields to empty values
 	public void setParametersToEmpty() {
 		transRateTextField.setText("");
 		recoveryRateTextField.setText("");

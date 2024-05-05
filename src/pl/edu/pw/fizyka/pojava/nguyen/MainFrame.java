@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
         setTitle("SIR Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>(); //BlockingQueue<String[][]> queue = new LinkedBlockingQueue<>();        
+        BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>();        
         SirCalculator sirCalculator = new SirCalculator(queue);
         LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue, sirCalculator);
                

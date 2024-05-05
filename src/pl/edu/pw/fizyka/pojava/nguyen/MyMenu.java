@@ -3,8 +3,6 @@ package pl.edu.pw.fizyka.pojava.nguyen;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-
-
 @SuppressWarnings("serial")
 public class MyMenu extends JMenu {
 	private JMenuItem clearParametersItem, showGraphsItem, readFromFileItem,

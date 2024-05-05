@@ -29,7 +29,7 @@ public class SirCalculator implements Runnable {
 		this.initialDistY = initialDistY;
 	}
 	
-	// function calculating current total number of S, I, R in the grid
+	// function calculating current total number of S or I or R in a grid
 	private int getTotalSIR(short[][] grid, short state) {
 		int susceptible = 0;
 		int infected = 0;
@@ -88,6 +88,7 @@ public class SirCalculator implements Runnable {
 		this.queue.clear();
 	}
 	
+	// Before iterating over the grid, create initial grid and add data to totalSIROverTime[][] at timeStep = 0
 	private void performStep0Calc() {
 		// Create initial grid of the requested size and initial distribution
 		grid = new short[gridSizeM][gridSizeN];		
@@ -118,14 +119,21 @@ public class SirCalculator implements Runnable {
 	// Calculation thread 
 	@Override
     public void run() {	
+		// indicate that the calculation is running
 		this.running = true;		
-		// Calculation logic as described in the specification of the project
-		short currentState; 
-		int time = 1;
+		// Declaring helper variables to be used in the calculation loop
+		int timeStep = 1;
+		short currentState; 		
+		int startRow;
+		int endRow;
+		int startCol;
+		int endCol;
+		// array for storing average SIR data which can be used to draw a graph
 		totalSIROverTime = new double[simTime+1][3];
-		for(int ii=0; ii<this.numOfSims; ii++) {
-			performStep0Calc();			
-			while(time<simTime+1 && running) {
+		// starting the calculation loop
+		for(int ii=0; ii<this.numOfSims; ii++) { // outer loop running whole simulation N times
+			performStep0Calc();	// before starting, we create initial grid at time step = 0 manually		
+			while(timeStep<simTime+1 && running) { // main loop for epidemic spread calculation over simTime
 				// Create a new grid as a copy of the initial grid
 				short[][] nextGrid = new short[grid.length][]; 
 				for (int kk = 0; kk < grid.length; kk++) {
@@ -134,15 +142,15 @@ public class SirCalculator implements Runnable {
 				        nextGrid[kk][ll] = grid[kk][ll];
 				    }
 				}
-				
+				// Looping over each cell in the grid and alter their states (S,I,R) accordingly
 				for(int ee=0; ee<gridSizeM; ee++) {
 					for(int ff=0; ff<gridSizeN; ff++) {
 						currentState = grid[ee][ff];
 						if(currentState == 0) {
-							int startRow = Math.max(0, ee - 1);
-							int endRow = Math.min(gridSizeM, ee + 2);
-							int startCol = Math.max(0, ff - 1);
-							int endCol = Math.min(gridSizeN, ff + 2);
+							startRow = Math.max(0, ee - 1);
+							endRow = Math.min(gridSizeM, ee + 2);
+							startCol = Math.max(0, ff - 1);
+							endCol = Math.min(gridSizeN, ff + 2);
 							outerLoop:
 							for (int gg = startRow; gg < endRow; gg++) {
 							    for (int hh = startCol; hh < endCol; hh++) {
@@ -169,28 +177,31 @@ public class SirCalculator implements Runnable {
 						}
 					}
 				}
+				// now the just calculated and changed grid becomes the old grid
 				grid = nextGrid;
-				try {
-	                // Put data into the queue
+				// push the just calculated grid to queue for LeftSubPanelGrid class to display
+				try {	                
 	                queue.put(grid);	                
 	            } catch (InterruptedException e) {
 	                e.printStackTrace();
 	            }
-				totalSIROverTime[time][0] += getTotalSIR(grid, (short)0 /*"S"*/);
-				totalSIROverTime[time][1] += getTotalSIR(grid, (short)1 /*"I"*/);
-				totalSIROverTime[time][2] += getTotalSIR(grid, (short)2 /*"R"*/);
+				// At each time step, total S,I,R amounts in the grid is saved in the array
+				// if simulation is run more than 1 time, they add up to be averaged out later
+				totalSIROverTime[timeStep][0] += getTotalSIR(grid, (short)0 /*"S"*/);
+				totalSIROverTime[timeStep][1] += getTotalSIR(grid, (short)1 /*"I"*/);
+				totalSIROverTime[timeStep][2] += getTotalSIR(grid, (short)2 /*"R"*/);
 				
-				time++;
+				timeStep++;
 			}
-			time = 1;
+			timeStep = 1;
 		}
-				
+		// here, average out the S,I,R amounts in the array		
 		for(int jj=0; jj<this.simTime+1;jj++) {
 			totalSIROverTime[jj][0] = totalSIROverTime[jj][0]/this.numOfSims;
 			totalSIROverTime[jj][1] = totalSIROverTime[jj][1]/this.numOfSims;
 			totalSIROverTime[jj][2] = totalSIROverTime[jj][2]/this.numOfSims;
 		}
-		
+		// indicate the calculation is not running anymore
 		this.running = false;		
     }
 }

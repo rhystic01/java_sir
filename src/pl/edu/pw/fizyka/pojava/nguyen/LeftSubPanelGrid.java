@@ -34,8 +34,7 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
     	add(labelPanel, BorderLayout.SOUTH);
     	isRunningLabel = new JLabel("Stopped");
     	labelPanel.setLayout(new BorderLayout());
-    	labelPanel.add(isRunningLabel, BorderLayout.WEST);
-    	
+    	labelPanel.add(isRunningLabel, BorderLayout.WEST);   	
     }   
    
     public void initializeGrid(short[][] gridData) {
