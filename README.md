@@ -2,7 +2,7 @@
 ## Input files
 When you choose to read parameters from a file, the file should have following format:   
 `transRate#RecoveryRate#GridSizeM#GridSizeN#numOfSims#simTime#animationSpeed#x1,y1;x2,y2;x3,y3...`  
-where `transRate` and `RecoveryRate` are rational numbers and the rest are integers. `animationSpeed` needs to be an integer from 1 to 60.  
+where `transRate` and `RecoveryRate` are rational numbers and the rest are integers. `animationSpeed` needs to be an integer from 1 to 30.  
 `x1,y1;x2,y2;x3,y3...` is a list of pairs of coordinates separated by semicolon of initially infected cells.
 ## Output files
 When you choose to save simulation data to a file, the generated file has the following format (an example file):
