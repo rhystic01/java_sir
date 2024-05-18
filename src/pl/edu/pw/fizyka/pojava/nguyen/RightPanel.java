@@ -19,7 +19,7 @@ public class RightPanel extends JPanel {
     private int dataError = 0;
      
 	// GUI setup
-	public RightPanel(SirCalculator sirCalculator, LeftSubPanelGrid leftSubPanelGrid) {    	
+	public RightPanel(SirCalculator sirCalculator, LeftSubPanelGrid leftSubPanelGrid, LeftSubPanelGraph leftSubPanelGraph) {    	
     	this.sirCalculator = sirCalculator;
     	
     	add(Box.createRigidArea(new Dimension(0, 12)));
@@ -45,8 +45,8 @@ public class RightPanel extends JPanel {
         xLabel = new JLabel("x");        
         gridSizeLabel = new JLabel("Grid size");
     	add(gridSizeLabel);       
-        gridSizeTextFieldM = new JTextField("30");        
-        gridSizeTextFieldN = new JTextField("30");
+        gridSizeTextFieldM = new JTextField("35");        
+        gridSizeTextFieldN = new JTextField("35");
         gridSizeFieldsPanel.add(gridSizeTextFieldM);
         gridSizeFieldsPanel.add(Box.createRigidArea(new Dimension(2,0)));
         gridSizeFieldsPanel.add(xLabel);
@@ -58,7 +58,7 @@ public class RightPanel extends JPanel {
         // Initial infected distribution user input area
         initDistributionLabel = new JLabel("Initial infected distribution");
     	add(initDistributionLabel);       
-        initDistributionTextField = new JTextField("15,15");
+        initDistributionTextField = new JTextField("17,17");
         add(initDistributionTextField);
         add(Box.createRigidArea(new Dimension(0, 12)));
        
@@ -80,7 +80,7 @@ public class RightPanel extends JPanel {
         animationSpeedLabel = new JLabel("Animation speed");
     	add(animationSpeedLabel);      
         add(Box.createRigidArea(new Dimension(0, 12)));        
-        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 20);        
+        animationSpeedSlider = new JSlider(JSlider.HORIZONTAL, 1, 30, 15);        
         animationSpeedSlider.setMajorTickSpacing(9);
         animationSpeedSlider.setPaintTicks(true);
         animationSpeedSlider.setPaintLabels(true);
@@ -110,20 +110,23 @@ public class RightPanel extends JPanel {
             			retrieveInitialDistribution("x"), retrieveInitialDistribution("y"));            	
             	leftSubPanelGrid.setAnimationSpeed(animationSpeedSlider.getValue());            	
             	
+            	Thread calculationThread = new Thread(sirCalculator);
+                Thread gridDisplayThread = new Thread(leftSubPanelGrid);
+                Thread graphDisplayThread = new Thread(leftSubPanelGraph);
             	// Only if the loaded data is valid and threads are not running, run the calculation and display threads
-            	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) { 
-            		Thread calculationThread = new Thread(sirCalculator);
-                    Thread gridDisplayThread = new Thread(leftSubPanelGrid);                    
-                    calculationThread.start();
-                    gridDisplayThread.start();        
+            	if(dataError == 0 && isInitialDistValid() && !sirCalculator.isRunning() && !leftSubPanelGrid.isRunning()) {             		                    
+                    calculationThread.start();                 
+                    gridDisplayThread.start(); 
+                    graphDisplayThread.start();
                 // Show error message if data is invalid    
             	} else if(dataError != 0 || !isInitialDistValid()){
             		JOptionPane.showMessageDialog(null, "Input data error: Wrong format or forbidden value",
             				"Input data error", JOptionPane.ERROR_MESSAGE);
             	// if threads are running already, stop them
-            	} else if(sirCalculator.isRunning() || leftSubPanelGrid.isRunning()) {
+            	} else if(sirCalculator.isRunning() || leftSubPanelGrid.isRunning() || leftSubPanelGraph.isRunning()) {     
             		sirCalculator.stop();
-            		leftSubPanelGrid.stop();
+            		leftSubPanelGrid.stop();    
+            		leftSubPanelGraph.stop();
             	} 
             	dataError = 0;
             }

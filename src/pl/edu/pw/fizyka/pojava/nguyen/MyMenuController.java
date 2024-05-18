@@ -193,7 +193,7 @@ public class MyMenuController implements ActionListener {
 
 		        // Create the scatter plot using the dataset
 		        JFreeChart chart = ChartFactory.createScatterPlot(
-		                "SIR over time",  // Chart title
+		                "Average SIR over time",  // Chart title
 		                "Time (arbitrary)",                // X-axis label
 		                "Number of individuals",                // Y-axis label
 		                dataset,                 // Dataset
@@ -242,7 +242,7 @@ public class MyMenuController implements ActionListener {
 			}		
 		}
 		else if(e.getActionCommand().equals("Set parameters to default")) {
-			rightPanel.setParameters("0.3","0.2","35","35","1","70","20","17,17");			
+			rightPanel.setParameters("0.3","0.2","35","35","1","70","15","17,17");			
 		}
 		
 	}

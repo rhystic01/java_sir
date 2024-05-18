@@ -14,13 +14,14 @@ public class MainFrame extends JFrame {
         setTitle("SIR Simulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        BlockingQueue<short[][]> queue = new LinkedBlockingQueue<>();        
-        SirCalculator sirCalculator = new SirCalculator(queue);
-        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(queue, sirCalculator);
+        BlockingQueue<short[][]> gridQueue = new LinkedBlockingQueue<>();   
+        BlockingQueue<double[][]> graphQueue = new LinkedBlockingQueue<>(); 
+        SirCalculator sirCalculator = new SirCalculator(gridQueue, graphQueue);
+        LeftSubPanelGrid leftSubPanelGrid = new LeftSubPanelGrid(gridQueue, sirCalculator);
                
-        LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph();
+        LeftSubPanelGraph leftSubPanelGraph = new LeftSubPanelGraph(graphQueue, sirCalculator);
         LeftPanel leftPanel = new LeftPanel(leftSubPanelGrid, leftSubPanelGraph);
-        RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid);
+        RightPanel rightPanel = new RightPanel(sirCalculator, leftSubPanelGrid, leftSubPanelGraph);
         
         MainPanel mainPanel = new MainPanel(rightPanel, leftPanel);       
         mainPanel.setPreferredSize(new Dimension(700, 700));                                    

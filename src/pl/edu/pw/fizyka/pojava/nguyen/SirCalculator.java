@@ -8,11 +8,13 @@ public class SirCalculator implements Runnable {
 	private int[] initialDistX, initialDistY;
 	private double[][] totalSIROverTime;	
 	private short[][] grid; 
-	private BlockingQueue<short[][]> queue;
-	private volatile boolean running = false;
+	private BlockingQueue<short[][]> gridQueue;
+	private BlockingQueue<double[][]> graphQueue;
+	private volatile boolean running = false;		
 	
-	 public SirCalculator(BlockingQueue<short[][]> queue) {
-	        this.queue = queue;	        
+	 public SirCalculator(BlockingQueue<short[][]> gridQueue, BlockingQueue<double[][]> graphQueue) {
+	        this.gridQueue = gridQueue;	
+	        this.graphQueue = graphQueue;
 	 }
 	
 	// method allowing passing of the simulation parameters to this class
@@ -85,11 +87,12 @@ public class SirCalculator implements Runnable {
 	// method to stop the calculation 
 	public void stop() {
 		this.running = false;
-		this.queue.clear();
+		this.gridQueue.clear();
 	}
 	
 	// Before iterating over the grid, create initial grid and add data to totalSIROverTime[][] at timeStep = 0
 	private void performStep0Calc() {
+		
 		// Create initial grid of the requested size and initial distribution
 		grid = new short[gridSizeM][gridSizeN];		
 		for(int aa=0; aa<gridSizeM; aa++) {
@@ -105,7 +108,7 @@ public class SirCalculator implements Runnable {
 		
 		try {
             // Put data into the queue
-            queue.put(grid);	                
+			gridQueue.put(grid);	                
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -113,7 +116,8 @@ public class SirCalculator implements Runnable {
 		//totalSIROverTime = new double[simTime+1][3];
 		totalSIROverTime[0][0] += getTotalSIR(grid, (short) 0 /*"S"*/);
 		totalSIROverTime[0][1] += getTotalSIR(grid, (short) 1 /*"I"*/);
-		totalSIROverTime[0][2] += getTotalSIR(grid, (short) 2 /*"R"*/);		
+		totalSIROverTime[0][2] += getTotalSIR(grid, (short) 2 /*"R"*/);				
+		
 	}
 	
 	// Calculation thread 
@@ -132,7 +136,7 @@ public class SirCalculator implements Runnable {
 		totalSIROverTime = new double[simTime+1][3];
 		// starting the calculation loop
 		for(int ii=0; ii<this.numOfSims; ii++) { // outer loop running whole simulation N times
-			performStep0Calc();	// before starting, we create initial grid at time step = 0 manually		
+			performStep0Calc(); // before starting, we create initial grid at time step = 0 manually		
 			while(timeStep<simTime+1 && running) { // main loop for epidemic spread calculation over simTime
 				// Create a new grid as a copy of the initial grid
 				short[][] nextGrid = new short[grid.length][]; 
@@ -181,7 +185,7 @@ public class SirCalculator implements Runnable {
 				grid = nextGrid;
 				// push the just calculated grid to queue for LeftSubPanelGrid class to display
 				try {	                
-	                queue.put(grid);	                
+					gridQueue.put(grid);	                
 	            } catch (InterruptedException e) {
 	                e.printStackTrace();
 	            }
@@ -189,7 +193,13 @@ public class SirCalculator implements Runnable {
 				// if simulation is run more than 1 time, they add up to be averaged out later
 				totalSIROverTime[timeStep][0] += getTotalSIR(grid, (short)0 /*"S"*/);
 				totalSIROverTime[timeStep][1] += getTotalSIR(grid, (short)1 /*"I"*/);
-				totalSIROverTime[timeStep][2] += getTotalSIR(grid, (short)2 /*"R"*/);
+				totalSIROverTime[timeStep][2] += getTotalSIR(grid, (short)2 /*"R"*/);				
+				
+				try {	                
+					graphQueue.put(totalSIROverTime);	                
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				
 				timeStep++;
 			}
@@ -201,6 +211,8 @@ public class SirCalculator implements Runnable {
 			totalSIROverTime[jj][1] = totalSIROverTime[jj][1]/this.numOfSims;
 			totalSIROverTime[jj][2] = totalSIROverTime[jj][2]/this.numOfSims;
 		}
+		
+		
 		// indicate the calculation is not running anymore
 		this.running = false;		
     }

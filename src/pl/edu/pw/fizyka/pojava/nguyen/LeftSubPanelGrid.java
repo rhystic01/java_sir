@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class LeftSubPanelGrid extends JPanel implements Runnable {
-	private BlockingQueue<short[][]> queue;
+	private BlockingQueue<short[][]> gridQueue;
 	private int animationSpeed = 2;
 	private volatile boolean running = false;
 	private JPanel[][] gridPanels;
@@ -24,8 +24,8 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
 	protected boolean isCellBorderSet = true;
 	private SirCalculator sirCalculator;
 	
-    public LeftSubPanelGrid(BlockingQueue<short[][]> queue, SirCalculator sirCalculator) {
-    	this.queue = queue;  
+    public LeftSubPanelGrid(BlockingQueue<short[][]> gridQueue, SirCalculator sirCalculator) {
+    	this.gridQueue = gridQueue;  
     	this.sirCalculator = sirCalculator;
     	animPanel = new JPanel();
     	labelPanel = new JPanel();
@@ -84,7 +84,7 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
     
     public void stop() {
     	this.running = false;
-    	this.queue.clear();
+    	this.gridQueue.clear();
     }
     
     public void resetTimeCounter() {
@@ -98,8 +98,8 @@ public class LeftSubPanelGrid extends JPanel implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (!queue.isEmpty()) {
-                        short[][] grid = queue.take();
+                    if (!gridQueue.isEmpty()) {
+                        short[][] grid = gridQueue.take();
                         initializeGrid(grid);                       
                         isRunningLabel.setText("Time (arbitrary): " + counter);
                         counter++;
