@@ -1,3 +1,10 @@
+# Screenshots
+## Application window while a simulation is running
+![Application window while simulation is running](images/1.png)
+
+## Generated graphs
+![Generated graphs](images/2.png)
+
 # File format information
 ## Input files
 When you choose to read parameters from a file, the file should have following format:   
